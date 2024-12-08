@@ -14,7 +14,9 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->string('name');
             $table->decimal('price', 10, 2);
-            $table->json('attributes');
+            $table->foreignId('color_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('size_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('material_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

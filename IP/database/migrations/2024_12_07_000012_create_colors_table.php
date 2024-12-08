@@ -8,19 +8,16 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('colors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description');
-            $table->decimal('price', 10, 2);
-            $table->foreignId('brand_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_active')->default(true);
+            $table->string('hex_code')->nullable();
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('colors');
     }
 };
