@@ -11,13 +11,13 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="https://via.placeholder.com/1200x400?text=Sale+Up+to+50%25+Off" class="d-block w-100" alt="...">
+                <img src="https://via.placeholder.com/1200x420?text=Sale+Up+to+50%25+Off" class="d-block w-100" alt="...">
             </div>
             <div class="carousel-item">
-                <img src="https://via.placeholder.com/1200x400?text=New+Collection+Available" class="d-block w-100" alt="...">
+                <img src="https://via.placeholder.com/1200x420?text=New+Collection+Available" class="d-block w-100" alt="...">
             </div>
             <div class="carousel-item">
-                <img src="https://via.placeholder.com/1200x400?text=Shop+Now+Best+Deals" class="d-block w-100" alt="...">
+                <img src="https://via.placeholder.com/1200x420?text=Shop+Now+Best+Deals" class="d-block w-100" alt="...">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -49,14 +49,19 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         @foreach($products as $product)
             <div class="col">
-                <div class="card h-100">
+                <div class="card h-100 position-relative">
+                    <!-- Best Seller Tag -->
+                    @if($product->best_seller)
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best Seller</span>
+                    @endif
                     <img src="{{ $product->image_url ?? 'https://via.placeholder.com/300x400' }}" class="card-img-top" alt="{{ $product->name }}">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ $product->name }}</h5>
-                        <p class="text-muted">{{ Str::limit($product->description, 80) }}</p>
+                        <p class="text-muted flex-grow-1">{{ Str::limit($product->description, 80) }}</p>
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="fw-bold">${{ number_format($product->price, 2) }}</span>
-                            <span class="badge bg-secondary"> {{ $product->variants->count() > 0 ? $product->variants->count().' Variant(s)' : 'No Variants' }}
+                            <span class="badge bg-secondary"> 
+                                {{ $product->variants->count() > 0 ? $product->variants->count().' Variant(s)' : 'No Variants' }}
                             </span>
                         </div>
                         <a href="{{ route('products.show', $product) }}" class="btn btn-primary w-100">View Details</a>
@@ -70,4 +75,38 @@
         {{ $products->links() }}
     </div>
 </div>
+
 @endsection
+
+@push('styles')
+<style>
+    .card {
+        min-height: 400px;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .card-body p {
+        flex-grow: 1;
+    }
+
+    .badge.bg-danger {
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            min-height: 500px;
+        }
+    }
+</style>
+@endpush

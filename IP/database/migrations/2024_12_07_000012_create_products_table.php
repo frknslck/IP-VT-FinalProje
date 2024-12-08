@@ -15,6 +15,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);
+            $table->boolean('best_seller')->default(false);
             $table->timestamps();
         });
     }

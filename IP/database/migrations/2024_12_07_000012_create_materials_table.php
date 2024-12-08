@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->decimal('chance', 5, 2)->default(1.00);
             $table->timestamps();
         });
     }

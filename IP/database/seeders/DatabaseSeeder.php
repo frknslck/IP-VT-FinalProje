@@ -45,29 +45,42 @@ class DatabaseSeeder extends Seeder
         }
 
         $colors = [
-            ['name' => 'Black', 'hex_code' => '#000000'],
-            ['name' => 'White', 'hex_code' => '#FFFFFF'],
-            ['name' => 'Red', 'hex_code' => '#FF0000'],
-            ['name' => 'Blue', 'hex_code' => '#0000FF'],
+            ['name' => 'Black', 'hex_code' => '#000000', 'chance' => 0.40],
+            ['name' => 'White', 'hex_code' => '#FFFFFF', 'chance' => 0.35],
+            ['name' => 'Red', 'hex_code' => '#FF0000', 'chance' => 0.20],
+            ['name' => 'Blue', 'hex_code' => '#0000FF', 'chance' => 0.10],
+            ['name' => 'Green', 'hex_code' => '#008000', 'chance' => 0.25],
+            ['name' => 'Yellow', 'hex_code' => '#FFFF00', 'chance' => 0.20],
+            ['name' => 'Orange', 'hex_code' => '#FFA500', 'chance' => 0.15],
+            ['name' => 'Purple', 'hex_code' => '#800080', 'chance' => 0.15],
+            ['name' => 'Pink', 'hex_code' => '#FFC0CB', 'chance' => 0.30],
+            ['name' => 'Gray', 'hex_code' => '#808080', 'chance' => 0.25],
         ];
         foreach ($colors as $color) {
             Color::create($color);
         }
 
         $sizes = [
-            ['name' => 'Small', 'code' => 'S'],
-            ['name' => 'Medium', 'code' => 'M'],
-            ['name' => 'Large', 'code' => 'L'],
-            ['name' => 'Extra Large', 'code' => 'XL'],
+            ['name' => 'Small', 'code' => 'S', 'chance' => 0.40],
+            ['name' => 'Medium', 'code' => 'M', 'chance' => 0.45],
+            ['name' => 'Large', 'code' => 'L', 'chance' => 0.50],
+            ['name' => 'Extra Large', 'code' => 'XL', 'chance' => 0.40],
+            ['name' => 'XXL', 'code' => 'XXL', 'chance' => 0.30],
+            ['name' => 'XXXL', 'code' => 'XXXL', 'chance' => 0.20],
         ];
         foreach ($sizes as $size) {
             Size::create($size);
         }
 
         $materials = [
-            ['name' => 'Cotton', 'description' => '100% Cotton'],
-            ['name' => 'Polyester', 'description' => '100% Polyester'],
-            ['name' => 'Cotton Blend', 'description' => '60% Cotton 40% Polyester'],
+            ['name' => 'Cotton', 'description' => '100% Cotton', 'chance' => 0.55],
+            ['name' => 'Polyester', 'description' => '100% Polyester', 'chance' => 0.35],
+            ['name' => 'Cotton Blend', 'description' => '60% Cotton 40% Polyester', 'chance' => 0.20],
+            ['name' => 'Wool', 'description' => '100% Wool', 'chance' => 0.25],
+            ['name' => 'Silk', 'description' => '100% Silk', 'chance' => 0.15],
+            ['name' => 'Linen', 'description' => '100% Linen', 'chance' => 0.20],
+            ['name' => 'Nylon', 'description' => '100% Nylon', 'chance' => 0.20],
+            ['name' => 'Leather', 'description' => '100% Leather', 'chance' => 0.30]
         ];
         foreach ($materials as $material) {
             Material::create($material);
@@ -87,6 +100,7 @@ class DatabaseSeeder extends Seeder
                     'price' => rand(10, 100),
                     'brand_id' => $brand->id,
                     'is_active' => true,
+                    'best_seller' => rand(0, 1) == 1 ? true : false
                 ]);
 
                 $product->categories()->attach($categories->random(rand(1, 2)));
@@ -94,19 +108,24 @@ class DatabaseSeeder extends Seeder
                 foreach ($colors as $color) {
                     foreach ($sizes as $size) {
                         foreach($materials as $material){
-                            ProductVariant::create([
-                                'product_id' => $product->id,
-                                'sku' => 'SKU-' . $product->id . '-' . $color->id . '-' . $size->id . '-' .$material->id,
-                                'name' => $product->name . ' - ' . $color->name . ' - ' . $size->name. ' - ' .$material->name,
-                                'price' => $product->price,
-                                'color_id' => $color->id,
-                                'size_id' => $size->id,
-                                'material_id' => $material->id,  
-                            ]);
+                if (rand(0, 100) / 100 <= $color->chance &&
+                                rand(0, 100) / 100 <= $size->chance &&
+                                rand(0, 100) / 100 <= $material->chance) 
+                            {
+                                ProductVariant::create([
+                                    'product_id' => $product->id,
+                                    'sku' => 'SKU-' . $product->id . '-' . $color->id . '-' . $size->id . '-' . $material->id,
+                                    'name' => $product->name . ' - ' . $color->name . ' - ' . $size->name . ' - ' . $material->name,
+                                    'price' => $product->price,
+                                    'color_id' => $color->id,
+                                    'size_id' => $size->id,
+                                    'material_id' => $material->id,
+                                ]);
                         } 
                     }
                 }
             }
         }
     }
+}
 }
