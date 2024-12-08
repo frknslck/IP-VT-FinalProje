@@ -14,29 +14,32 @@ class ProductController extends Controller
 {
     public function index()
     {   
-        $categories = Category::all();
+        $categories = Category::whereNull('parent_id')->with('children')->get();
         $products = Product::with(['brand', 'categories'])
             ->where('is_active', true)
             ->paginate(12);
         return view('homepage', compact('products', 'categories'));
     }
 
-    // public function show(Product $product)
-    // {
-    //     $product->load(['brand', 'categories', 'variants.color', 'variants.size', 'variants.material']);
-    //     return view('products.show', compact('product'));
-    // }
-
     public function show(Product $product)
     {
         $product->load(['variants', 'categories']);
+        
         $relatedProducts = Product::whereHas('categories', function ($query) use ($product) {
             $query->whereIn('categories.id', $product->categories->pluck('id'));
         })->where('id', '!=', $product->id)->take(4)->get();
     
-        $colors = Color::all();
-        $sizes = Size::all();
-        $materials = Material::all();
+        $colors = Color::whereHas('productVariants', function ($query) use ($product) {
+            $query->where('product_id', $product->id);
+        })->get();
+    
+        $sizes = Size::whereHas('productVariants', function ($query) use ($product) {
+            $query->where('product_id', $product->id);
+        })->get();
+    
+        $materials = Material::whereHas('productVariants', function ($query) use ($product) {
+            $query->where('product_id', $product->id);
+        })->get();
     
         return view('products.show', compact('product', 'relatedProducts', 'colors', 'sizes', 'materials'));
     }

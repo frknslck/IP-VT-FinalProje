@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <!-- Karosel -->
+
     <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
@@ -28,46 +28,55 @@
         </button>
     </div>
 
-    <!-- Kategorilere Hızlı Erişim -->
     <div class="row text-center mb-5">
+        <h1 class="mb-4">Kategoriler</h1>
         @foreach($categories as $category)
-            <div class="col-md-4">
-                <a href="{{ route('category.show', $category->id) }}" class="text-decoration-none text-dark">
-                    <div class="card">
-                        <img src="{{ $category->image_url ?? 'https://via.placeholder.com/300x200?text=' . urlencode($category->name) }}" class="card-img-top" alt="{{ $category->name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $category->name }}</h5>
+            @if ($category->parent_id == null)
+                <div class="col-md-4">
+                    <a href="{{ route('categories.show', $category->id) }}" class="text-decoration-none text-dark">
+                        <div class="card">
+                            <img src="{{ $category->image_url ?? 'https://via.placeholder.com/300x200?text=' . urlencode($category->name) }}" class="card-img-top" alt="{{ $category->name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $category->name }}</h5>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            @endif
         @endforeach
     </div>
 
-    <!-- Öne Çıkan Ürünler -->
     <h2 class="mb-4">Featured Products</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         @foreach($products as $product)
-            <div class="col">
-                <div class="card h-100 position-relative">
-                    <!-- Best Seller Tag -->
-                    @if($product->best_seller)
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best Seller</span>
-                    @endif
-                    <img src="{{ $product->image_url ?? 'https://via.placeholder.com/300x400' }}" class="card-img-top" alt="{{ $product->name }}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $product->name }}</h5>
-                        <p class="text-muted flex-grow-1">{{ Str::limit($product->description, 80) }}</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">${{ number_format($product->price, 2) }}</span>
-                            <span class="badge bg-secondary"> 
-                                {{ $product->variants->count() > 0 ? $product->variants->count().' Variant(s)' : 'No Variants' }}
-                            </span>
-                        </div>
-                        <a href="{{ route('products.show', $product) }}" class="btn btn-primary w-100">View Details</a>
+        <div class="col">
+            <div class="card h-100 position-relative">
+            
+                <form action="{{ route('wishlist.add') }}" method="POST" class="d-inline position-absolute top-0 start-0 m-2">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </form>
+        
+                @if($product->best_seller)
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best Seller</span>
+                @endif
+                <img src="{{ $product->image_url ?? 'https://via.placeholder.com/300x400' }}" class="card-img-top" alt="{{ $product->name }}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ $product->name }}</h5>
+                    <p class="text-muted flex-grow-1">{{ Str::limit($product->description, 80) }}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold">${{ number_format($product->price, 2) }}</span>
+                        <span class="badge bg-secondary"> 
+                            {{ $product->variants->count() > 0 ? $product->variants->count().' Variant(s)' : 'No Variants' }}
+                        </span>
                     </div>
+                    <a href="{{ route('products.show', $product) }}" class="btn btn-primary w-100">View Details</a>
                 </div>
             </div>
+        </div>
         @endforeach
     </div>
 

@@ -3,63 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Wishlist;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $wishlistItems = Wishlist::where('user_id', Auth::user()->id)->get();
+        return view('wishlist.index', compact('wishlistItems'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function addToWishlist(Request $request)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        $wishlistItem = Wishlist::firstOrCreate([
+            'user_id' => Auth::id(),
+            'product_id' => $request->product_id,
+        ]);
+
+        return back()->with('success', 'Product added to wishlist successfully.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function removeFromWishlist(Wishlist $wishlistItem)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Wishlist $wishlist)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Wishlist $wishlist)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Wishlist $wishlist)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Wishlist $wishlist)
-    {
-        //
+        $wishlistItem->delete();
+        return redirect()->route('wishlist.index')->with('success', 'Product removed from wishlist successfully.');
     }
 }

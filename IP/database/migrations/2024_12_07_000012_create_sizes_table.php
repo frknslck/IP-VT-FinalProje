@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->nullable();
             $table->decimal('chance', 5, 2)->default(1.00);
+            $table->string('category');
             $table->timestamps();
         });
     }

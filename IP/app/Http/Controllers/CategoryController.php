@@ -15,8 +15,15 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        $products = $category->products()->paginate(12);
-        return view('categories.show', compact('category', 'products'));
+        $subcategories = $category->children;
+        
+        if ($category->parent_id === null) {
+            $products = $category->getAllProducts()->paginate(12);
+        } else {
+            $products = $category->products()->paginate(12);
+        }
+
+        return view('categories.show', compact('category', 'subcategories', 'products'));
     }
 
     public function create()

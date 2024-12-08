@@ -2,16 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'parent_id'
-    ];
+    use HasFactory;
+
+    protected $fillable = ['name', 'slug', 'parent_id'];
 
     public function parent()
     {
@@ -26,5 +24,13 @@ class Category extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class);
+    }
+
+    public function getAllProducts()
+    {
+        return Product::whereHas('categories', function ($query) {
+            $query->where('categories.id', $this->id)
+                  ->orWhere('categories.parent_id', $this->id);
+        });
     }
 }

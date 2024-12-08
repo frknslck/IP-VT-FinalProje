@@ -18,8 +18,8 @@
                 <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">About</a></li>
             </ul>
             <ul class="nav">
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2"><i class="fas fa-heart"></i> Wishlist</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                <li class="nav-item"><a href="{{route('wishlist.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-heart"></i> Wishlist</a></li>
+                <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Cart</a></li>
                 <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2"><i class="fa-solid fa-user"></i> My Acc</a></li>
             </ul>
         </div>
@@ -31,7 +31,7 @@
                 <span class="fs-4">Nightingale Shop</span>
             </a>
             <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                <input type="search" class="form-control" placeholder="Enter product id..." aria-label="Search">
             </form>
         </div>
     </header>
