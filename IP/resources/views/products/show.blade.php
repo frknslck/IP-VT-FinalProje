@@ -45,6 +45,15 @@
                 
                 <button type="submit" class="btn btn-primary">Add to Cart</button>
             </form>
+
+            <form action="{{ route('wishlist.toggle') }}" method="POST" class="col-md-6 mt-4">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <button type="submit" 
+                    class="btn {{ Auth::user() && Auth::user()->wishlist->contains('product_id', $product->id) ? 'btn-danger' : 'btn-outline-danger' }}">
+                    {{ Auth::user() && Auth::user()->wishlist->contains('product_id', $product->id) ? 'Remove from Wishlist' : 'Add to Wishlist' }}
+                </button>
+            </form>
         </div>
     </div>
     

@@ -15,18 +15,26 @@ class WishlistController extends Controller
         return view('wishlist.index', compact('wishlistItems'));
     }
 
-    public function addToWishlist(Request $request)
+    public function toggle(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
 
-        $wishlistItem = Wishlist::firstOrCreate([
-            'user_id' => Auth::id(),
-            'product_id' => $request->product_id,
-        ]);
+        $userId = Auth::id();
+        $productId = $request->input('product_id');
 
-        return back()->with('success', 'Product added to wishlist successfully.');
+        $wishlistItem = Wishlist::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($wishlistItem) {
+            $wishlistItem->delete();
+            return back()->with('success', 'Product removed from wishlist successfully.');
+        } else {
+            Wishlist::create(['user_id' => $userId, 'product_id' => $productId]);
+            return back()->with('success', 'Product added to wishlist successfully.');
+        }
     }
 
     public function removeFromWishlist(Wishlist $wishlistItem)

@@ -52,13 +52,14 @@
         <div class="col">
             <div class="card h-100 position-relative">
             
-                <form action="{{ route('wishlist.add') }}" method="POST" class="d-inline position-absolute top-0 start-0 m-2">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </form>
+            <form action="{{ route('wishlist.toggle') }}" method="POST" class="wishlist-form position-absolute top-0 start-0 m-2">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <button type="submit" 
+                    class="btn btn-sm {{ Auth::user() && Auth::user()->wishlist->contains('product_id', $product->id) ? 'btn-danger' : 'btn-outline-danger' }}">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </form>
         
                 @if($product->best_seller)
                     <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best Seller</span>

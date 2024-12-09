@@ -23,28 +23,24 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['variants', 'categories']);
-        
+        $product->load(['variants.color', 'variants.size', 'variants.material', 'categories']);
+        $stock = $product->variants->sum('stock');
         $relatedProducts = Product::whereHas('categories', function ($query) use ($product) {
             $query->whereIn('categories.id', $product->categories->pluck('id'));
         })->where('id', '!=', $product->id)->take(4)->get();
-    
-        $colors = Color::whereHas('productVariants', function ($query) use ($product) {
-            $query->where('product_id', $product->id);
-        })->get();
-    
-        $sizes = Size::whereHas('productVariants', function ($query) use ($product) {
-            $query->where('product_id', $product->id);
-        })->get();
-    
-        $materials = Material::whereHas('productVariants', function ($query) use ($product) {
-            $query->where('product_id', $product->id);
-        })->get();
-    
-        return view('products.show', compact('product', 'relatedProducts', 'colors', 'sizes', 'materials'));
-    }
-    
 
+        // $variantOptions = $product->variants->groupBy('color_id')->map(function ($colorVariants) {
+        //     return $colorVariants->groupBy('size_id')->map(function ($sizeVariants) {
+        //         return $sizeVariants->pluck('material_id');
+        //     });
+        // });
+
+        $colors = $product->variants->pluck('color')->unique();
+        $sizes = $product->variants->pluck('size')->unique();
+        $materials = $product->variants->pluck('material')->unique();
+
+        return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials'));
+    }
 
     public function create()
     {

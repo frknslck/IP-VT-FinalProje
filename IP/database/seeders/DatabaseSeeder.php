@@ -17,8 +17,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'furkan selçuk',
+            'email' => 'fsb@gmail.com',
+            'password' => bcrypt('fsb12345')
         ]);
 
         $this->createBrands();
@@ -201,6 +202,7 @@ class DatabaseSeeder extends Seeder
                             'color_id' => $color->id,
                             'size_id' => $size->id,
                             'material_id' => $material->id,
+                            'stock' => rand(0, 20)
                         ]);
                     }
                 }

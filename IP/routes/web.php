@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\WishlistController;
@@ -12,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ProductController::class, 'index'])->name('homepage');
 Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Product Variant - Stock
+
+Route::patch('/product-variants/{productVariant}/update-stock', [ProductVariantController::class, 'updateStock'])->name('product-variants.update-stock');
 
 // Shopping Cart
 
@@ -24,7 +29,7 @@ Route::patch('/cart/update-quantity/{item}', [ShoppingCartController::class, 'up
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/wishlist/add', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     Route::delete('/wishlist/remove/{wishlistItem}', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
 });
 
@@ -33,6 +38,10 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// User
+
+Route::get('/user', function (){return view('user.index');})->name('user.index');
 
 // Profile
 

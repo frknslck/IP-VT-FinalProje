@@ -20,7 +20,7 @@
             <ul class="nav">
                 <li class="nav-item"><a href="{{route('wishlist.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-heart"></i> Wishlist</a></li>
                 <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Cart</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2"><i class="fa-solid fa-user"></i> My Acc</a></li>
+                <li class="nav-item"><a href="{{route('user.index')}}" class="nav-link link-body-emphasis px-2"><i class="fa-solid fa-user"></i> {{Auth::user() ? Auth::user()->name : 'Guest'}}</a></li>
             </ul>
         </div>
     </nav>
