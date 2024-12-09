@@ -41,9 +41,9 @@ class ProductController extends Controller
 
         // dd($variantOptions);
 
-        $colors = $product->variants->pluck('color')->unique();
-        $sizes = $product->variants->pluck('size')->unique();
-        $materials = $product->variants->pluck('material')->unique();
+        $colors = $product->variants->pluck('color')->unique()->sortBy('id');
+        $sizes = $product->variants->pluck('size')->unique()->sortBy('id');
+        $materials = $product->variants->pluck('material')->unique()->sortBy('id');
 
         return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials'));
     }

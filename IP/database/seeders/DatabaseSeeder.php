@@ -144,8 +144,8 @@ class DatabaseSeeder extends Seeder
     {
         $materials = [
             ['name' => 'Cotton', 'description' => '100% Cotton', 'chance' => 0.55],
-            ['name' => 'Polyester', 'description' => '100% Polyester', 'chance' => 0.35],
             ['name' => 'Cotton Blend', 'description' => '60% Cotton 40% Polyester', 'chance' => 0.20],
+            ['name' => 'Polyester', 'description' => '100% Polyester', 'chance' => 0.35],
             ['name' => 'Wool', 'description' => '100% Wool', 'chance' => 0.25],
             ['name' => 'Silk', 'description' => '100% Silk', 'chance' => 0.15],
             ['name' => 'Linen', 'description' => '100% Linen', 'chance' => 0.20],

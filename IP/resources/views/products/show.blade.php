@@ -27,19 +27,25 @@
                 
                 <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
-                    <select name="size_id" id="size" class="form-select" required disabled>
+                    <select name="size_id" id="size" class="form-select" required>
                         <option value="">Select a size</option>
+                        @foreach ($sizes as $size)
+                            <option value="{{$size->id}}">{{$size->name}}</option>
+                        @endforeach
                     </select>
                 </div>
                 
                 <div class="mb-3">
                     <label for="material" class="form-label">Material</label>
-                    <select name="material_id" id="material" class="form-select" required disabled>
+                    <select name="material_id" id="material" class="form-select" required>
                         <option value="">Select a material</option>
+                        @foreach ($materials as $material)
+                            <option value="{{$material->id}}">{{$material->name}}</option>
+                        @endforeach
                     </select>
                 </div>
                 
-                <button type="submit" class="btn btn-primary" id="addToCartBtn" disabled>Add to Cart</button>
+                <button type="submit" class="btn btn-primary" id="addToCartBtn">Add to Cart</button>
             </form>
 
             <form action="{{ route('wishlist.toggle') }}" method="POST" class="col-md-6 mt-4">
