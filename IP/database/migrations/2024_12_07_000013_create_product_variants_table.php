@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('color_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('size_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('material_id')->nullable()->constrained()->onDelete('set null');
-            $table->integer('stock')->nullable()->default(0);
             $table->timestamps();
         });
     }

@@ -20,10 +20,12 @@ Route::patch('/product-variants/{productVariant}/update-stock', [ProductVariantC
 
 // Shopping Cart
 
-Route::get('/cart', [ShoppingCartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [ShoppingCartController::class, 'addToCart'])->name('cart.add');
-Route::delete('/cart/remove/{item}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
-Route::patch('/cart/update-quantity/{item}', [ShoppingCartController::class, 'updateQuantity'])->name('cart.update-quantity');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [ShoppingCartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [ShoppingCartController::class, 'addToCart'])->name('cart.add');
+    Route::delete('/cart/remove/{item}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::patch('/cart/update-quantity/{item}', [ShoppingCartController::class, 'updateQuantity'])->name('cart.update-quantity');
+});
 
 // Wishlist
 

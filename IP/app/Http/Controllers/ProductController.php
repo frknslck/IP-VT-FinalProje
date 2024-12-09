@@ -24,7 +24,11 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['variants.color', 'variants.size', 'variants.material', 'categories']);
-        $stock = $product->variants->sum('stock');
+
+        $stock = $product->variants->sum(function($variant) {
+            return $variant->stock ? $variant->stock->quantity : 0;
+        });
+        
         $relatedProducts = Product::whereHas('categories', function ($query) use ($product) {
             $query->whereIn('categories.id', $product->categories->pluck('id'));
         })->where('id', '!=', $product->id)->take(4)->get();
@@ -34,6 +38,8 @@ class ProductController extends Controller
         //         return $sizeVariants->pluck('material_id');
         //     });
         // });
+
+        // dd($variantOptions);
 
         $colors = $product->variants->pluck('color')->unique();
         $sizes = $product->variants->pluck('size')->unique();

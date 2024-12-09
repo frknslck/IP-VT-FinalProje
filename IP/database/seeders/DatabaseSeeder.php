@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
@@ -11,6 +11,7 @@ use App\Models\Size;
 use App\Models\Material;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\Stock;
 
 class DatabaseSeeder extends Seeder
 {
@@ -194,22 +195,26 @@ class DatabaseSeeder extends Seeder
                         rand(0, 100) / 100 <= $size->chance &&
                         rand(0, 100) / 100 <= $material->chance) 
                     {
-                        ProductVariant::create([
+                        $sku = 'SKU-' . $product->id . '-' . $color->id . '-' . $size->id . '-' . $material->id;
+                        $variant = ProductVariant::create([
                             'product_id' => $product->id,
-                            'sku' => 'SKU-' . $product->id . '-' . $color->id . '-' . $size->id . '-' . $material->id,
+                            'sku' => $sku,
                             'name' => $product->name . ' - ' . $color->name . ' - ' . $size->name . ' - ' . $material->name,
                             'price' => $product->price,
                             'color_id' => $color->id,
                             'size_id' => $size->id,
                             'material_id' => $material->id,
-                            'stock' => rand(0, 20)
+                        ]);
+
+                        Stock::create([
+                            'sku' => $sku,
+                            'quantity' => rand(0, 20)
                         ]);
                     }
                 }
             }
         }
     }
-
     private function getSizeCategoryForProductCategory($categorySlug)
     {
         if (strpos($categorySlug, 'shoes') !== false) {

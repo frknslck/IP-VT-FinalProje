@@ -10,9 +10,11 @@ return new class extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_variant_id')->constrained()->onDelete('cascade');
+            $table->string('sku');
             $table->integer('quantity');
             $table->timestamps();
+
+            $table->foreign('sku')->references('sku')->on('product_variants')->onDelete('cascade');
         });
     }
 
