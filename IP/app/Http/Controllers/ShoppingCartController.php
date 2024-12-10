@@ -8,6 +8,7 @@ use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Session;
 
 class ShoppingCartController extends Controller
 {
@@ -39,13 +40,13 @@ class ShoppingCartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart successfully.');
+        return redirect()->route('shopping-cart.index')->with('success', 'Product added to cart successfully.');
     }
 
     public function removeFromCart(ShoppingCartItem $item)
     {
         $item->delete();
-        return redirect()->route('cart.index')->with('success', 'Product removed from cart successfully.');
+        return redirect()->route('shopping-cart.index')->with('success', 'Product removed from cart successfully.');
     }
 
     public function updateQuantity(Request $request, ShoppingCartItem $item)
@@ -57,20 +58,13 @@ class ShoppingCartController extends Controller
         $item->quantity = $request->quantity;
         $item->save();
 
-        return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
+        return redirect()->route('shopping-cart.index')->with('success', 'Cart updated successfully.');
     }
 
     private function getOrCreateCart()
     {
         if (Auth::check()) {
-            return ShoppingCart::firstOrCreate(['user_id' => Auth::id()]);
-        } else {
-            $sessionId = session()->get('cart_session_id');
-            if (!$sessionId) {
-                $sessionId = Str::uuid();
-                session()->put('cart_session_id', $sessionId);
-            }
-            return ShoppingCart::firstOrCreate(['session_id' => $sessionId]);
+            return ShoppingCart::firstOrCreate(['user_id' => Auth::id()], ['session_id' => Session::getId()]);
         }
     }
 }

@@ -33,11 +33,11 @@ class ProductController extends Controller
             $query->whereIn('categories.id', $product->categories->pluck('id'));
         })->where('id', '!=', $product->id)->take(4)->get();
 
-        // $variantOptions = $product->variants->groupBy('color_id')->map(function ($colorVariants) {
-        //     return $colorVariants->groupBy('size_id')->map(function ($sizeVariants) {
-        //         return $sizeVariants->pluck('material_id');
-        //     });
-        // });
+        $variantOptions = $product->variants->groupBy('color_id')->map(function ($colorVariants) {
+            return $colorVariants->groupBy('size_id')->map(function ($sizeVariants) {
+                return $sizeVariants->pluck('material_id');
+            });
+        });
 
         // dd($variantOptions);
 
@@ -45,7 +45,10 @@ class ProductController extends Controller
         $sizes = $product->variants->pluck('size')->unique()->sortBy('id');
         $materials = $product->variants->pluck('material')->unique()->sortBy('id');
 
-        return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials'));
+        $sizeNames = $sizes->pluck('name', 'id');
+        $materialNames = $materials->pluck('name', 'id');
+
+        return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials', 'variantOptions', 'sizeNames', 'materialNames'));
     }
 
     public function create()

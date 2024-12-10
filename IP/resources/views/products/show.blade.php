@@ -25,7 +25,7 @@
                     </select>
                 </div>
                 
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
                     <select name="size_id" id="size" class="form-select" required>
                         <option value="">Select a size</option>
@@ -42,6 +42,20 @@
                         @foreach ($materials as $material)
                             <option value="{{$material->id}}">{{$material->name}}</option>
                         @endforeach
+                    </select>
+                </div> -->
+
+                <div class="mb3">
+                    <label for="size" class="form-label">Size</label>
+                    <select id="size" name="size_id" class="form-select" disabled>
+                        <option value="">Select a size</option>
+                    </select>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="material" class="form-label">Material</label>
+                    <select id="material" name="material_id" class="form-select" disabled>
+                        <option value="">Select a material</option>
                     </select>
                 </div>
                 
@@ -76,3 +90,49 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const colorSelect = document.getElementById('color');
+        const sizeSelect = document.getElementById('size');
+        const materialSelect = document.getElementById('material');
+        const variantOptions = @json($variantOptions);
+        const sizeNames = @json($sizeNames);
+        const materialNames = @json($materialNames);
+
+        colorSelect.addEventListener('change', function() {
+            const selectedColor = this.value;
+            sizeSelect.innerHTML = '<option value="">Select a size</option>';
+            materialSelect.innerHTML = '<option value="">Select a material</option>';
+            sizeSelect.disabled = !selectedColor;
+            materialSelect.disabled = true;
+
+            if (selectedColor && variantOptions[selectedColor]) {
+                Object.keys(variantOptions[selectedColor]).forEach(sizeId => {
+                    const option = document.createElement('option');
+                    option.value = sizeId;
+                    option.textContent = sizeNames[sizeId] || `Size ${sizeId}`;
+                    sizeSelect.appendChild(option);
+                });
+            }
+        });
+
+        sizeSelect.addEventListener('change', function() {
+            const selectedColor = colorSelect.value;
+            const selectedSize = this.value;
+            materialSelect.innerHTML = '<option value="">Select a material</option>';
+            materialSelect.disabled = !selectedSize;
+
+            if (selectedColor && selectedSize && variantOptions[selectedColor][selectedSize]) {
+                variantOptions[selectedColor][selectedSize].forEach(materialId => {
+                    const option = document.createElement('option');
+                    option.value = materialId;
+                    option.textContent = materialNames[materialId] || `Material ${materialId}`;
+                    materialSelect.appendChild(option);
+                });
+            }
+        });
+    });
+</script>
+@endpush
