@@ -30,8 +30,8 @@
                 <i class="fa-solid fa-dove fa-2x me-2"></i>
                 <span class="fs-4">Nightingale Shop</span>
             </a>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-                <input type="search" class="form-control" placeholder="Enter product id..." aria-label="Search">
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search" action="{{route('products.search')}}" method="POST">
+                <input type="search" class="form-control" placeholder="Enter product id..." aria-label="Search" id="search_id">
             </form>
         </div>
     </header>

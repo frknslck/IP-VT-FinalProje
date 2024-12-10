@@ -47,14 +47,14 @@
 
                 <div class="mb3">
                     <label for="size" class="form-label">Size</label>
-                    <select id="size" name="size_id" class="form-select" disabled>
+                    <select id="size" name="size_id" class="form-select" disabled required>
                         <option value="">Select a size</option>
                     </select>
                 </div>
         
                 <div class="mb-3">
                     <label for="material" class="form-label">Material</label>
-                    <select id="material" name="material_id" class="form-select" disabled>
+                    <select id="material" name="material_id" class="form-select" disabled required>
                         <option value="">Select a material</option>
                     </select>
                 </div>

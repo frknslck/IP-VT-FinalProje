@@ -51,6 +51,11 @@ class ProductController extends Controller
         return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials', 'variantOptions', 'sizeNames', 'materialNames'));
     }
 
+    public function serchProductById(Request $request){
+        dd($request);
+        return view('product.show');
+    }
+
     public function create()
     {
         //

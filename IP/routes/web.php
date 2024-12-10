@@ -11,7 +11,14 @@ use Illuminate\Support\Facades\Route;
 // Classic Routes
 
 Route::get('/', [ProductController::class, 'index'])->name('homepage');
+
+// Product
+
 Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/search/{id}', [ProductController::class, 'searchProductById'])->name('products.search');
+
+// Category
+
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 
 // Product Variant - Stock

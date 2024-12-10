@@ -18,7 +18,13 @@
             <tbody>
                 @foreach($cart->items as $item)
                     <tr>
-                        <td>{{ $item->productVariant->product->name }} - {{ $item->productVariant->name }}</td>
+                        <td>Product: {{ $item->productVariant->product->name }} 
+                            <br>Variant:
+                            {{$item->productVariant->color->name}} - 
+                            {{$item->productVariant->size->name}} - 
+                            {{$item->productVariant->material->name}}
+                        
+                        </td>
                         <td>${{ number_format($item->productVariant->price, 2) }}</td>
                         <td>
                             <form action="{{ route('cart.update-quantity', $item) }}" method="POST" class="d-inline">
@@ -47,7 +53,7 @@
                 </tr>
             </tfoot>
         </table>
-        <a href="{{ route('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
+        <a href="" class="btn btn-primary">Proceed to Checkout</a>
     @else
         <p>Your cart is empty.</p>
     @endif

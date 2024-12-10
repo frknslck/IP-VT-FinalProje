@@ -19,34 +19,48 @@ class ShoppingCartController extends Controller
     }
 
     public function addToCart(Request $request)
-    {
-        $request->validate([
-            'product_variant_id' => 'required|exists:product_variants,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+{
+    $product_id = $request->product_id;
+    $color_id = $request->color_id;
+    $size_id = $request->size_id;
+    $material_id = $request->material_id;
+    $quantity = 1;
 
-        $cart = $this->getOrCreateCart();
+    $product_variant = ProductVariant::where('product_id', $product_id)
+        ->where('color_id', $color_id)
+        ->where('size_id', $size_id)
+        ->where('material_id', $material_id)
+        ->first();
 
-        $item = $cart->items()->where('product_variant_id', $request->product_variant_id)->first();
-
-        if ($item) {
-            $item->quantity += $request->quantity;
-            $item->save();
-        } else {
-            $cart->items()->create([
-                'user_id' => Auth::id(),
-                'product_variant_id' => $request->product_variant_id,
-                'quantity' => $request->quantity,
-            ]);
-        }
-
-        return redirect()->route('shopping-cart.index')->with('success', 'Product added to cart successfully.');
+    if (!$product_variant) {
+        return redirect()->back()->with('error', 'Product variant not found.');
     }
+
+    $cart = ShoppingCart::firstOrCreate(['user_id' => Auth::id()]);
+
+    $cartItem = ShoppingCartItem::where('shopping_cart_id', $cart->id)
+        ->where('product_variant_id', $product_variant->id)
+        ->first();
+
+    if ($cartItem) {
+        $cartItem->quantity += $quantity;
+        $cartItem->save();
+    } else {
+        ShoppingCartItem::create([
+            'shopping_cart_id' => $cart->id,
+            'product_variant_id' => $product_variant->id,
+            'quantity' => $quantity,
+            'price' => $product_variant->price,
+        ]);
+    }
+
+    return back()->with('success', 'Product added to cart successfully.');
+}
 
     public function removeFromCart(ShoppingCartItem $item)
     {
         $item->delete();
-        return redirect()->route('shopping-cart.index')->with('success', 'Product removed from cart successfully.');
+        return back()->with('success', 'Product removed from cart successfully.');
     }
 
     public function updateQuantity(Request $request, ShoppingCartItem $item)
@@ -58,7 +72,7 @@ class ShoppingCartController extends Controller
         $item->quantity = $request->quantity;
         $item->save();
 
-        return redirect()->route('shopping-cart.index')->with('success', 'Cart updated successfully.');
+        return back()->with('success', 'Cart updated successfully.');
     }
 
     private function getOrCreateCart()
