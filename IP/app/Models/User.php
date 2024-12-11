@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -16,7 +17,6 @@ class User extends Authenticatable
         'email',
         'tel_no',
         'password',
-        // 'authority'
     ];
 
     protected $hidden = [
@@ -40,5 +40,20 @@ class User extends Authenticatable
     public function wishlist(): HasMany
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($role): bool
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
     }
 }

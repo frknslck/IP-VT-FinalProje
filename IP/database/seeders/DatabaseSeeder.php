@@ -17,46 +17,76 @@ use App\Models\Material;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Stock;
+use App\Models\Role;
+use App\Models\RoleUser;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'furkan selçuk',
-            'email' => 'fsb@gmail.com',
-            'tel_no' => '05309191726',
-            // 'authority' => true,
-            'password' => bcrypt('fsb12345')
-        ]);
-
-        User::factory()->create([
-            'name' => 'yağmur kaya',
-            'email' => 'ymrky@gmail.com',
-            'tel_no' => '05055322682',
-            // 'authority' => false,
-            'password' => bcrypt('fsb12345')
-        ]);
-
-        User::factory()->create([
-            'name' => 'batu abi',
-            'email' => 'batu@gmail.com',
-            'tel_no' => '05055055500',
-            // 'authority' => false,
-            'password' => bcrypt('fsb12345')
-        ]);
-
         $this->createBrands();
         $this->createCategories();
         $this->createColors();
         $this->createSizes();
         $this->createMaterials();
         $this->createProducts();
+        $this->createRoles();
+        $this->createUsers();
         $this->createAddresses();
         $this->createWishlistItems();
         $this->createShoppingCart();
         $this->createShoppingCartItems();
         $this->createPaymentMethods();
+    }
+
+    private function createRoles()
+    {
+        $roles = ['Admin', 'Staff', 'Customer', 'Blogger'];
+
+        foreach ($roles as $role) {
+            Role::create(['name' => $role]);
+        }
+    }
+
+    private function createUsers()
+    {
+        $users = [
+            [
+                'name' => 'furkan selçuk',
+                'email' => 'fsb@gmail.com',
+                'tel_no' => '05309191726',
+                'password' => bcrypt('fsb12345'),
+                'roles' => ['Admin']
+            ],
+            [
+                'name' => 'yağmur kaya',
+                'email' => 'ymrky@gmail.com',
+                'tel_no' => '05055322682',
+                'password' => bcrypt('fsb12345'),
+                'roles' => ['Staff', 'Blogger']
+            ],
+            [
+                'name' => 'batu abi',
+                'email' => 'batu@gmail.com',
+                'tel_no' => '05055055500',
+                'password' => bcrypt('fsb12345'),
+                'roles' => ['Customer']
+            ],
+        ];
+
+        foreach ($users as $userData) {
+            $roles = $userData['roles'];
+            unset($userData['roles']);
+            
+            $user = User::create($userData);
+            
+            foreach ($roles as $roleName) {
+                $role = Role::where('name', $roleName)->first();
+                if ($role) {
+                    $user->roles()->attach($role->id);
+                }
+            }
+        }
     }
 
     private function createBrands()

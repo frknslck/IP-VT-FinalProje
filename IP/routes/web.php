@@ -54,6 +54,8 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/user', [UserController::class, 'show'])->name('user.index');
     Route::post('/user', [UserController::class, 'update'])->name('user.update');
+    Route::post('/user/role', [UserController::class, 'addRole'])->name('user.addRole');
+    Route::delete('/user/role', [UserController::class, 'removeRole'])->name('user.removeRole');
     Route::post('/user/address', [UserController::class, 'addAddress'])->name('user.addAddress');
     Route::put('/user/address/{address}', [UserController::class, 'updateAddress'])->name('user.updateAddress');
     Route::delete('/user/address/{address}', [UserController::class, 'deleteAddress'])->name('user.deleteAddress');

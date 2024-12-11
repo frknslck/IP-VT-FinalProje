@@ -2,13 +2,6 @@
 
 @section('content')
 <div class="container mt-3 mb-5">
-
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <h2 class="mb-4">Profile Information</h2>
 
     <form action="{{ route('user.update') }}" method="POST" class="mb-5">
@@ -29,6 +22,45 @@
         </div>
         <button type="submit" class="btn btn-primary">Update Profile</button>
     </form>
+
+    <h2 class="mb-4">Your Roles</h2>
+    <div class="mb-4">
+        @foreach($userRoles as $role)
+            <span class="badge bg-primary text-white me-1 mb-1" style="font-size: 0.9rem; padding: 0.5em 1em; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                {{ $role->name }}
+            </span>
+        @endforeach
+    </div>
+
+    @if($user->isAdmin())
+    <div class="mb-5">
+        <h4>Manage Roles</h4>
+        <form action="{{ route('user.addRole') }}" method="POST" class="mb-3">
+            @csrf
+            <div class="row">
+                <div class="col-md-6">
+                    <select name="role_id" class="form-select">
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success">Add Role</button>
+                </div>
+            </div>
+        </form>
+        @foreach($userRoles as $role)
+            <form action="{{ route('user.removeRole') }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="role_id" value="{{ $role->id }}">
+                <input type="hidden" name="user_id" value="{{ $user->id }}">
+                <button type="submit" class="btn btn-danger btn-sm">Remove {{ $role->name }}</button>
+            </form>
+        @endforeach
+    </div>
+    @endif
 
     <h3 class="mb-4">Your Addresses</h3>
     <div class="row">
