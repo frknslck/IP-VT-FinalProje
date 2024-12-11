@@ -47,6 +47,13 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function coupons(): BelongsToMany
+    {
+        return $this->belongsToMany(Coupon::class, 'coupon_user')
+            ->withPivot('used_count')
+            ->withTimestamps();
+    }
+
     public function hasRole($role): bool
     {
         return $this->roles()->where('name', $role)->exists();

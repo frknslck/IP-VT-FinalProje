@@ -43,4 +43,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductReview::class);
     }
+
+    public function campaigns()
+    {
+        return $this->belongsTo(Campaign::class, 'campaign_product')
+            ->withTimestamps();
+    }
 }

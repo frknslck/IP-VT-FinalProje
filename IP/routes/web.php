@@ -43,6 +43,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/wishlist/remove/{wishlistItem}', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
 });
 
+// Coupons
+
+use App\Http\Controllers\CouponController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
+});
+
 // User Dashboard
 
 Route::get('/dashboard', function () {

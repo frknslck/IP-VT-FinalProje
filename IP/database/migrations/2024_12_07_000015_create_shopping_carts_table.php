@@ -14,10 +14,19 @@ return new class extends Migration
             $table->string('session_id')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('shopping_cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('shopping_cart_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_variant_id')->constrained()->onDelete('cascade');
+            $table->integer('quantity');
+            $table->timestamps();
+        });
     }
 
     public function down()
     {
+        Schema::dropIfExists('shopping_cart_items');
         Schema::dropIfExists('shopping_carts');
     }
 };

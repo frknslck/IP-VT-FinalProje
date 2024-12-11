@@ -62,7 +62,7 @@
     </div>
     @endif
 
-    <h3 class="mb-4">Your Addresses</h3>
+    <h2 class="mb-4">Your Addresses</h2>
     <div class="row">
         @foreach($addresses as $address)
             <div class="col-md-4 mb-4">

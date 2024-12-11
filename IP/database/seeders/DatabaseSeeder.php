@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Address;
+use App\Models\Campaign;
+use App\Models\Coupon;
 use App\Models\PaymentMethod;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
@@ -37,6 +39,8 @@ class DatabaseSeeder extends Seeder
         $this->createShoppingCart();
         $this->createShoppingCartItems();
         $this->createPaymentMethods();
+        $this->createCoupons();
+        $this->createCampaigns();
     }
 
     private function createRoles()
@@ -217,7 +221,7 @@ class DatabaseSeeder extends Seeder
     private function createProducts()
     {
         $brands = Brand::all();
-        $categories = Category::whereNotNull('parent_id')->get(); // Only subcategories
+        $categories = Category::whereNotNull('parent_id')->get();
         $colors = Color::all();
         $materials = Material::all();
 
@@ -254,7 +258,7 @@ class DatabaseSeeder extends Seeder
                         rand(0, 100) / 100 <= $material->chance) 
                     {
                         $sku = 'SKU-' . $product->id . '-' . $color->id . '-' . $size->id . '-' . $material->id;
-                        $variant = ProductVariant::create([
+                        ProductVariant::create([
                             'product_id' => $product->id,
                             'sku' => $sku,
                             'name' => $product->name . ' - ' . $color->name . ' - ' . $size->name . ' - ' . $material->name,
@@ -431,6 +435,84 @@ class DatabaseSeeder extends Seeder
 
         foreach($paymentmethods as $paymentmethod){
             PaymentMethod::create($paymentmethod);
+        }
+    }
+
+    public function createCoupons(){
+        $coupons = [
+            [
+                'code' => 'DISCOUNT10',
+                'type' => 'percentage',
+                'value' => 10.00,
+                'start_date' => now(),
+                'end_date' => now()->addDays(30),
+                'usage_limit' => 100,
+                'used_count' => 0,
+                'is_active' => true,
+            ],
+            [
+                'code' => 'FIXED50',
+                'type' => 'fixed',
+                'value' => 50.00,
+                'start_date' => now(),
+                'end_date' => now()->addDays(15),
+                'usage_limit' => 50,
+                'used_count' => 0,
+                'is_active' => true,
+            ],
+            [
+                'code' => 'WELCOME5',
+                'type' => 'fixed',
+                'value' => 5.00,
+                'start_date' => now(),
+                'end_date' => now()->addDays(60),
+                'usage_limit' => null,
+                'used_count' => 0,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($coupons as $coupon) {
+            $coupon = Coupon::create($coupon);
+            $coupon->users()->attach([1, 2, 3]);
+        }
+    }
+
+    public function createCampaigns(){
+        $campaigns = [
+            [
+                'name' => 'Summer Sale',
+                'start_date' => now(),
+                'end_date' => now()->addDays(30),
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Black Friday',
+                'start_date' => now(),
+                'end_date' => now()->addDays(10),
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Winter Clearance',
+                'start_date' => now(),
+                'end_date' => now()->addDays(60),
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($campaigns as $campaignData) {
+            $campaign = Campaign::create($campaignData);
+
+            $productCount = Product::max('id');
+            for ($i = 1; $i <= $productCount; $i++) {
+                if (rand(0, 1)) {
+                    $alreadyAssigned = \DB::table('campaign_product')->where('product_id', $i)->exists();
+                    
+                    if (!$alreadyAssigned) {
+                        $campaign->products()->attach($i);
+                    }
+                }
+            }
         }
     }
 }

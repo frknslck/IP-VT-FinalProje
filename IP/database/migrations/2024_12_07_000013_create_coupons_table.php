@@ -20,10 +20,19 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+
+        Schema::create('coupon_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('coupon_id')->constrained('coupons')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->integer('used_count')->default(0);
+            $table->timestamps();
+        });
     }
 
     public function down()
     {
+        Schema::dropIfExists('coupon_user');
         Schema::dropIfExists('coupons');
     }
 };
