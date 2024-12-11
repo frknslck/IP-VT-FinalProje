@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ShoppingCartController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +16,7 @@ Route::get('/', [ProductController::class, 'index'])->name('homepage');
 // Product
 
 Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/search/{id}', [ProductController::class, 'searchProductById'])->name('products.search');
+Route::get('/search', [ProductController::class, 'searchProductById'])->name('products.search');
 
 // Category
 
@@ -50,7 +51,13 @@ Route::get('/dashboard', function () {
 
 // User
 
-Route::get('/user', function (){return view('user.index');})->name('user.index');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user', [UserController::class, 'show'])->name('user.index');
+    Route::post('/user', [UserController::class, 'update'])->name('user.update');
+    Route::post('/user/address', [UserController::class, 'addAddress'])->name('user.addAddress');
+    Route::put('/user/address/{address}', [UserController::class, 'updateAddress'])->name('user.updateAddress');
+    Route::delete('/user/address/{address}', [UserController::class, 'deleteAddress'])->name('user.deleteAddress');
+});
 
 // Profile
 
@@ -59,5 +66,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 require __DIR__.'/auth.php';

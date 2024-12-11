@@ -51,9 +51,16 @@ class ProductController extends Controller
         return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials', 'variantOptions', 'sizeNames', 'materialNames'));
     }
 
-    public function serchProductById(Request $request){
-        dd($request);
-        return view('product.show');
+    public function searchProductById(Request $request)
+    {
+        $id = $request->input('id');
+        if ($id) {
+            $product = Product::find($id);
+            if ($product) {
+                return redirect()->route('products.show', ['product' => $product]);
+            }
+        }
+        return redirect()->back()->with('error', 'Product not found');
     }
 
     public function create()

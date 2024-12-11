@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
+use App\Models\ShoppingCart;
+use App\Models\ShoppingCartItem;
+use App\Models\Wishlist;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Brand;
@@ -20,6 +24,24 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'furkan selçuk',
             'email' => 'fsb@gmail.com',
+            'tel_no' => '05309191726',
+            'authority' => true,
+            'password' => bcrypt('fsb12345')
+        ]);
+
+        User::factory()->create([
+            'name' => 'yağmur kaya',
+            'email' => 'ymrky@gmail.com',
+            'tel_no' => '05055322682',
+            'authority' => false,
+            'password' => bcrypt('fsb12345')
+        ]);
+
+        User::factory()->create([
+            'name' => 'batu abi',
+            'email' => 'batu@gmail.com',
+            'tel_no' => '05055055500',
+            'authority' => false,
             'password' => bcrypt('fsb12345')
         ]);
 
@@ -29,6 +51,10 @@ class DatabaseSeeder extends Seeder
         $this->createSizes();
         $this->createMaterials();
         $this->createProducts();
+        $this->createAddresses();
+        $this->createWishlistItems();
+        $this->createShoppingCart();
+        $this->createShoppingCartItems();
     }
 
     private function createBrands()
@@ -238,6 +264,112 @@ class DatabaseSeeder extends Seeder
             foreach ($data['children'] as $child) {
                 $this->createCategory($child, $category->id);
             }
+        }
+    }
+
+    private function createAddresses(){
+        $addresses = [
+            [
+                'user_id' => 1,
+                'country' => 'Turkey',
+                'city' => 'Istanbul',
+                'neighborhood' => 'Kadikoy',
+                'building_no' => '12A',
+                'apartment_no' => '5',
+            ],
+            [
+                'user_id' => 1,
+                'country' => 'Turkey',
+                'city' => 'Ankara',
+                'neighborhood' => 'Cankaya',
+                'building_no' => '34',
+                'apartment_no' => '10',
+            ],
+            [
+                'user_id' => 1,
+                'country' => 'Turkey',
+                'city' => 'Izmir',
+                'neighborhood' => 'Alsancak',
+                'building_no' => '7B',
+                'apartment_no' => '3',
+            ],
+            [
+                'user_id' => 2,
+                'country' => 'Turkey',
+                'city' => 'Antalya',
+                'neighborhood' => 'Lara',
+                'building_no' => '5C',
+                'apartment_no' => '8',
+            ],
+            [
+                'user_id' => 2,
+                'country' => 'Turkey',
+                'city' => 'Adana',
+                'neighborhood' => 'Seyhan',
+                'building_no' => '15',
+                'apartment_no' => '4',
+            ],
+            [
+                'user_id' => 2,
+                'country' => 'Turkey',
+                'city' => 'Gaziantep',
+                'neighborhood' => 'Sehitkamil',
+                'building_no' => '9A',
+                'apartment_no' => '1',
+            ],
+            [
+                'user_id' => 3,
+                'country' => 'Turkey',
+                'city' => 'Bursa',
+                'neighborhood' => 'Nilüfer',
+                'building_no' => '18D',
+                'apartment_no' => '6',
+            ],
+            [
+                'user_id' => 3,
+                'country' => 'Turkey',
+                'city' => 'Mersin',
+                'neighborhood' => 'Mezitli',
+                'building_no' => '22',
+                'apartment_no' => '9',
+            ],
+            [
+                'user_id' => 3,
+                'country' => 'Turkey',
+                'city' => 'Eskisehir',
+                'neighborhood' => 'Odunpazari',
+                'building_no' => '10',
+                'apartment_no' => '2',
+            ],
+        ];
+        
+        foreach($addresses as $address){
+            Address::create($address);
+        }
+    }
+
+    private function createWishlistItems(){
+        for ($i = 0; $i < 10; $i++) {
+            Wishlist::create([
+                'user_id' => 1,
+                'product_id' => rand(1, 135)
+            ]);
+        }
+    }
+
+    private function createShoppingCart(){
+        ShoppingCart::create([
+            'user_id' => 1,
+        ]);
+    }
+
+    private function createShoppingCartItems(){
+        for ($i = 0; $i < 10; $i++) {
+            ShoppingCartItem::create([
+                'shopping_cart_id' => 1,
+                'product_variant_id' => rand(1, 500),
+                'quantity' => rand(1, 5)
+            ]);
         }
     }
 }

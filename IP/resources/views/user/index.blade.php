@@ -1,21 +1,141 @@
 @extends('layout')
 
 @section('content')
+<div class="container mt-3 mb-5">
 
-@if (Auth::user())
-    <div class="text-center mt-3">
-        <p> You're logged in </p>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-primary">Logout</button>
-        </form>
-    </div>
-@else
-    <div class="text-center mt-3">
-        <p> You're not logged in </p>
-        <a class="btn btn-primary" href="/register">Register</a>
-        <a class="btn btn-primary" href="/login">Login</a>
-    </div>
-@endif
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
+    <h2 class="mb-4">Profile Information</h2>
+
+    <form action="{{ route('user.update') }}" method="POST" class="mb-5">
+        @csrf
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="tel_no" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="tel_no" name="tel_no" value="{{ $user->tel_no }}" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+
+    <h3 class="mb-4">Your Addresses</h3>
+    <div class="row">
+        @foreach($addresses as $address)
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $address->country }}, {{ $address->city }}</h5>
+                        <p class="card-text">
+                            Country: {{ $address->country }} <br>
+                            City: {{ $address->city }} <br>
+                            Neighborhood: {{ $address->neighborhood }} <br>
+                            Building No: {{ $address->building_no }}, Apartment No: {{ $address->apartment_no }}
+                        </p>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editAddressModal-{{ $address->id }}">Edit</button>
+                        <form action="{{ route('user.deleteAddress', $address->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="editAddressModal-{{ $address->id }}" tabindex="-1" aria-labelledby="editAddressLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form action="{{ route('user.updateAddress', $address->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editAddressLabel">Edit Address</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="country" class="form-label">Country</label>
+                                    <input type="text" class="form-control" name="country" value="{{ $address->country }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" name="city" value="{{ $address->city }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="neighborhood" class="form-label">Neighborhood</label>
+                                    <input type="text" class="form-control" name="neighborhood" value="{{ $address->neighborhood }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="building_no" class="form-label">Building No</label>
+                                    <input type="text" class="form-control" name="building_no" value="{{ $address->building_no }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="apartment_no" class="form-label">Apartment No</label>
+                                    <input type="text" class="form-control" name="apartment_no" value="{{ $address->apartment_no }}">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addAddressModal">+ Add New Address</button>
+
+    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('user.addAddress') }}" method="POST">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAddressLabel">Add New Address</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <input type="text" class="form-control" name="country" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" name="city" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="neighborhood" class="form-label">Neighborhood</label>
+                            <input type="text" class="form-control" name="neighborhood" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="building_no" class="form-label">Building No</label>
+                            <input type="text" class="form-control" name="building_no" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apartment_no" class="form-label">Apartment No</label>
+                            <input type="text" class="form-control" name="apartment_no">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Add Address</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

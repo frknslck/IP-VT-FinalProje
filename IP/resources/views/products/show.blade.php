@@ -45,7 +45,7 @@
                     </select>
                 </div> -->
 
-                <div class="mb3">
+                <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
                     <select id="size" name="size_id" class="form-select" disabled required>
                         <option value="">Select a size</option>
