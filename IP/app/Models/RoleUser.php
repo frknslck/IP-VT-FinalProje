@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentMethod extends Model
+class RoleUser extends Model
 {
     protected $fillable = [
-        'name',
-        'is_active'
+        'user_id',
+        'role_id'
     ];
+
+    
 }

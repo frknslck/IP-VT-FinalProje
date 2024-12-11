@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // return redirect()->intended(route('dashboard', absolute: false));
-        return redirect()->intended(route('homepage', absolute: false));
+        return redirect()->intended(route('homepage', absolute: false))->with('success', 'Login was successfull');;
     }
 
     /**
@@ -43,6 +43,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Logout was successfull');;
     }
 }

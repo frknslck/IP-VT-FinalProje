@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Address;
+use App\Models\PaymentMethod;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use App\Models\Wishlist;
@@ -25,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'furkan selçuk',
             'email' => 'fsb@gmail.com',
             'tel_no' => '05309191726',
-            'authority' => true,
+            // 'authority' => true,
             'password' => bcrypt('fsb12345')
         ]);
 
@@ -33,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'yağmur kaya',
             'email' => 'ymrky@gmail.com',
             'tel_no' => '05055322682',
-            'authority' => false,
+            // 'authority' => false,
             'password' => bcrypt('fsb12345')
         ]);
 
@@ -41,7 +42,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'batu abi',
             'email' => 'batu@gmail.com',
             'tel_no' => '05055055500',
-            'authority' => false,
+            // 'authority' => false,
             'password' => bcrypt('fsb12345')
         ]);
 
@@ -55,6 +56,7 @@ class DatabaseSeeder extends Seeder
         $this->createWishlistItems();
         $this->createShoppingCart();
         $this->createShoppingCartItems();
+        $this->createPaymentMethods();
     }
 
     private function createBrands()
@@ -349,7 +351,7 @@ class DatabaseSeeder extends Seeder
     }
 
     private function createWishlistItems(){
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i <12; $i++) {
             Wishlist::create([
                 'user_id' => 1,
                 'product_id' => rand(1, 135)
@@ -370,6 +372,35 @@ class DatabaseSeeder extends Seeder
                 'product_variant_id' => rand(1, 500),
                 'quantity' => rand(1, 5)
             ]);
+        }
+    }
+
+    private function createPaymentMethods(){
+        $paymentmethods = [
+            [
+                'name' => 'Credit Card',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Debit Card',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Cash on Delivery',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Digital Wallet',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Mobile Payment',
+                'is_active' => true
+            ],
+        ];
+
+        foreach($paymentmethods as $paymentmethod){
+            PaymentMethod::create($paymentmethod);
         }
     }
 }

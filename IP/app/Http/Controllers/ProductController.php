@@ -57,9 +57,11 @@ class ProductController extends Controller
         if ($id) {
             $product = Product::find($id);
             if ($product) {
+                // flash()->success('');
                 return redirect()->route('products.show', ['product' => $product]);
             }
         }
+        // flash()->error('Product not found.');
         return redirect()->back()->with('error', 'Product not found');
     }
 
