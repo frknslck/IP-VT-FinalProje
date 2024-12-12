@@ -479,56 +479,68 @@ class DatabaseSeeder extends Seeder
     }
 
     public function createCampaigns()
-{
-    $campaigns = [
-        [
-            'name' => 'Summer Sale',
-            'type' => 'fixed',
-            'value' => 10.00,
-            'start_date' => now(),
-            'end_date' => now()->addDays(30),
-            'used_count' => 0,
-            'is_active' => true,
-        ],
-        [
-            'name' => 'Black Friday',
-            'type' => 'percentage',
-            'value' => 50.00,
-            'start_date' => now(),
-            'end_date' => now()->addDays(10),
-            'used_count' => 0,
-            'is_active' => true,
-        ],
-        [
-            'name' => 'Winter Clearance',
-            'type' => 'percentage',
-            'value' => 10.00,
-            'start_date' => now(),
-            'end_date' => now()->addDays(60),
-            'used_count' => 0,
-            'is_active' => true,
-        ],
-    ];
+    {
+        $campaigns = [
+            [
+                'name' => 'Summer Sale',
+                'type' => 'fixed',
+                'value' => 10.00,
+                'start_date' => now(),
+                'end_date' => now()->addDays(30),
+                'used_count' => 0,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Black Friday',
+                'type' => 'percentage',
+                'value' => 50.00,
+                'start_date' => now(),
+                'end_date' => now()->addDays(10),
+                'used_count' => 0,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Winter Clearance',
+                'type' => 'percentage',
+                'value' => 10.00,
+                'start_date' => now(),
+                'end_date' => now()->addDays(60),
+                'used_count' => 0,
+                'is_active' => true,
+            ],
+        ];
 
-    foreach ($campaigns as $campaignData) {
-        $campaign = Campaign::create($campaignData);
-
-        $products = Product::all();
-        foreach ($products as $product) {
-            $alreadyAssigned = \DB::table('campaign_product')->where('product_id', $product->id)->exists();
+        foreach ($campaigns as $campaignData) {
+            $campaign = Campaign::create($campaignData);
+        
+            $products = Product::all();
+            $productCount = $products->count();
             
-            if (!$alreadyAssigned) {
-                if ($campaign->type === 'fixed') {
-                    if ($product->price >= $campaign->value * 1.5) {
-                        $campaign->products()->attach($product->id);
-                    }
-                } else {
-                    if (rand(0, 1)) {
-                        $campaign->products()->attach($product->id);
+            $assignmentPercentage = mt_rand(10, 50) / 100;
+            $assignmentCount = round($productCount * $assignmentPercentage);
+            
+            $shuffledProducts = $products->shuffle()->take($assignmentCount);
+            
+            foreach ($shuffledProducts as $product) {
+                $alreadyAssigned = \DB::table('campaign_product')->where('product_id', $product->id)->exists();
+                
+                if (!$alreadyAssigned) {
+                    if ($campaign->type === 'fixed') {
+                        if ($product->price >= $campaign->value * 1.5) {
+                            $campaign->products()->attach($product->id);
+                        }
+                    } else {
+                        $discountedPrice = $product->price * (1 - $campaign->value / 100);
+
+                        $minPricePercentage = max(0.3, 1 - ($campaign->value / 100));
+                        $minPrice = $product->price * $minPricePercentage;
+                        
+                        if ($discountedPrice >= $minPrice) {
+                            $campaign->products()->attach($product->id);
+                        }
                     }
                 }
             }
         }
     }
-}
 }
