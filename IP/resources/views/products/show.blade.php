@@ -9,12 +9,20 @@
         <div class="col-md-6">
             <h1>{{ $product->name }}</h1>
             <p>{{ $product->description }}</p>
-            <p class="h3 mb-4">${{ number_format($product->price, 2) }}</p>
+            @if($product->discounted_price < $product->price)
+                <p class="h3 mb-4">
+                    <span class="text-muted text-decoration-line-through">${{ number_format($product->price, 2) }}</span>
+                    <span class="text-danger">${{ number_format($product->discounted_price, 2) }}</span>
+                </p>
+            @else
+                <p class="h3 mb-4">${{ number_format($product->price, 2) }}</p>
+            @endif
             <p>Total Stock: {{ $stock }}</p>
             
             <form action="{{ route('cart.add') }}" method="POST">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" name="quantity" value="1">
                 <div class="mb-3">
                     <label for="color" class="form-label">Color</label>
                     <select name="color_id" id="color" class="form-select" required>
@@ -24,26 +32,6 @@
                         @endforeach
                     </select>
                 </div>
-                
-                <!-- <div class="mb-3">
-                    <label for="size" class="form-label">Size</label>
-                    <select name="size_id" id="size" class="form-select" required>
-                        <option value="">Select a size</option>
-                        @foreach ($sizes as $size)
-                            <option value="{{$size->id}}">{{$size->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="material" class="form-label">Material</label>
-                    <select name="material_id" id="material" class="form-select" required>
-                        <option value="">Select a material</option>
-                        @foreach ($materials as $material)
-                            <option value="{{$material->id}}">{{$material->name}}</option>
-                        @endforeach
-                    </select>
-                </div> -->
 
                 <div class="mb-3">
                     <label for="size" class="form-label">Size</label>

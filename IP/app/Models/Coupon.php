@@ -29,4 +29,17 @@ class Coupon extends Model
             ->withPivot('used_count')
             ->withTimestamps();
     }
+
+    public function calculateDiscount(float $amount): float
+    {
+        if ($this->type === 'percentage') {
+            return $amount * ($this->value / 100);
+        }
+
+        if ($this->type === 'fixed') {
+            return min($this->value, $amount);
+        }
+
+        return 0;
+    }
 }

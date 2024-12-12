@@ -11,7 +11,10 @@ class WishlistController extends Controller
 {
     public function index()
     {
-        $wishlistItems = Wishlist::where('user_id', Auth::user()->id)->get();
+        $wishlistItems = auth()->user()->wishlist()->with(['product.campaigns' => function($query) {
+            $query->where('is_active', true)->orderBy('created_at', 'DESC');
+        }])->get();
+
         return view('wishlist.index', compact('wishlistItems'));
     }
 

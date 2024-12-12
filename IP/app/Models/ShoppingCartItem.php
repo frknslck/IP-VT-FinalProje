@@ -20,4 +20,9 @@ class ShoppingCartItem extends Model
     {
         return $this->belongsTo(ProductVariant::class);
     }
+
+    public function getTotalPriceAttribute()
+    {
+        return $this->quantity * $this->productVariant->getEffectivePrice();
+    }
 }

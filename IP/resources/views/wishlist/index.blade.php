@@ -1,26 +1,14 @@
 @extends('layout')
 
 @section('content')
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <h1>Your Wishlist</h1>
 
     @if($wishlistItems->count() > 0)
-        <div class="row">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             @foreach($wishlistItems as $item)
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="{{ $item->product->image_url ?? 'https://via.placeholder.com/300x200' }}" class="card-img-top" alt="{{ $item->product->name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $item->product->name }}</h5>
-                            <p class="card-text">${{ number_format($item->product->price, 2) }}</p>
-                            <a href="{{ route('products.show', $item->product) }}" class="btn btn-primary">View Product</a>
-                            <form action="{{ route('wishlist.remove', $item) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Remove</button>
-                            </form>
-                        </div>
-                    </div>
+                <div class="col">
+                    @include('partials.product-card', ['product' => $item->product])
                 </div>
             @endforeach
         </div>

@@ -12,8 +12,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('session_id')->nullable();
+            $table->foreignId('coupon_id')->nullable()->constrained('coupons')->onDelete('cascade');
             $table->timestamps();
         });
+        
 
         Schema::create('shopping_cart_items', function (Blueprint $table) {
             $table->id();

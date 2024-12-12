@@ -9,9 +9,17 @@ class Campaign extends Model
 {
     protected $fillable = [
         'name',
+        'type',
+        'value',
         'start_date',
         'end_date',
+        'used_count',
         'is_active',
+    ];
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
     public function products(): BelongsToMany

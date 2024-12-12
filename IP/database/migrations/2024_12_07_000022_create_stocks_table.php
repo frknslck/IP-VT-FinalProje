@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('sku');
             $table->integer('quantity');
             $table->timestamps();
-
             $table->foreign('sku')->references('sku')->on('product_variants')->onDelete('cascade');
         });
     }

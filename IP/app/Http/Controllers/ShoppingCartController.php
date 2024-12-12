@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use App\Models\ProductVariant;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -19,43 +20,43 @@ class ShoppingCartController extends Controller
     }
 
     public function addToCart(Request $request)
-{
-    $product_id = $request->product_id;
-    $color_id = $request->color_id;
-    $size_id = $request->size_id;
-    $material_id = $request->material_id;
-    $quantity = 1;
+    {
+        $product_id = $request->product_id;
+        $color_id = $request->color_id;
+        $size_id = $request->size_id;
+        $material_id = $request->material_id;
+        $quantity = 1;
 
-    $product_variant = ProductVariant::where('product_id', $product_id)
-        ->where('color_id', $color_id)
-        ->where('size_id', $size_id)
-        ->where('material_id', $material_id)
-        ->first();
+        $product_variant = ProductVariant::where('product_id', $product_id)
+            ->where('color_id', $color_id)
+            ->where('size_id', $size_id)
+            ->where('material_id', $material_id)
+            ->first();
 
-    if (!$product_variant) {
-        return redirect()->back()->with('error', 'Product variant not found.');
+        if (!$product_variant) {
+            return redirect()->back()->with('error', 'Product variant not found.');
+        }
+
+        $cart = ShoppingCart::firstOrCreate(['user_id' => Auth::id()]);
+
+        $cartItem = ShoppingCartItem::where('shopping_cart_id', $cart->id)
+            ->where('product_variant_id', $product_variant->id)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $quantity;
+            $cartItem->save();
+        } else {
+            ShoppingCartItem::create([
+                'shopping_cart_id' => $cart->id,
+                'product_variant_id' => $product_variant->id,
+                'quantity' => $quantity,
+                'price' => $product_variant->price,
+            ]);
+        }
+
+        return back()->with('success', 'Product added to cart successfully.');
     }
-
-    $cart = ShoppingCart::firstOrCreate(['user_id' => Auth::id()]);
-
-    $cartItem = ShoppingCartItem::where('shopping_cart_id', $cart->id)
-        ->where('product_variant_id', $product_variant->id)
-        ->first();
-
-    if ($cartItem) {
-        $cartItem->quantity += $quantity;
-        $cartItem->save();
-    } else {
-        ShoppingCartItem::create([
-            'shopping_cart_id' => $cart->id,
-            'product_variant_id' => $product_variant->id,
-            'quantity' => $quantity,
-            'price' => $product_variant->price,
-        ]);
-    }
-
-    return back()->with('success', 'Product added to cart successfully.');
-}
 
     public function removeFromCart(ShoppingCartItem $item)
     {
@@ -75,10 +76,37 @@ class ShoppingCartController extends Controller
         return back()->with('success', 'Cart updated successfully.');
     }
 
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $coupon = Coupon::where('code', $request->code)->first();
+
+
+        if (!$coupon || !$coupon->is_active) {
+            return back()->with('error', 'Invalid coupon code.');
+        }
+
+        $cart = $this->getOrCreateCart();
+        $cart->coupon_id = $coupon->id;
+        $cart->save();
+
+        return back()->with('success', 'Coupon applied successfully.');
+    }
+
     private function getOrCreateCart()
     {
         if (Auth::check()) {
-            return ShoppingCart::firstOrCreate(['user_id' => Auth::id()], ['session_id' => Session::getId()]);
+            return ShoppingCart::firstOrCreate(
+                ['user_id' => Auth::id()],
+                ['session_id' => Session::getId()]
+            );
+        } else {
+            return ShoppingCart::firstOrCreate(
+                ['session_id' => Session::getId()]
+            );
         }
     }
 }

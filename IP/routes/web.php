@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
@@ -9,9 +10,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
-// Classic Routes
+// Homepage
 
 Route::get('/', [ProductController::class, 'index'])->name('homepage');
+Route::get('/', [CampaignController::class, 'carousel'])->name('homepage');
 
 // Product
 
@@ -33,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/add', [ShoppingCartController::class, 'addToCart'])->name('cart.add');
     Route::delete('/cart/remove/{item}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
     Route::patch('/cart/update-quantity/{item}', [ShoppingCartController::class, 'updateQuantity'])->name('cart.update-quantity');
+    Route::post('/cart/apply-coupon', [ShoppingCartController::class, 'applyCoupon'])->name('cart.apply-coupon');
 });
 
 // Wishlist
@@ -50,6 +53,11 @@ use App\Http\Controllers\CouponController;
 Route::middleware('auth')->group(function () {
     Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
 });
+
+// Campaigns
+
+Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+Route::get('/campaigns/{campaign}', [CampaignController::class, 'show'])->name('campaigns.show');
 
 // User Dashboard
 

@@ -46,7 +46,20 @@ class Product extends Model
 
     public function campaigns()
     {
-        return $this->belongsTo(Campaign::class, 'campaign_product')
+        return $this->belongsToMany(Campaign::class, 'campaign_product')
             ->withTimestamps();
+    }
+
+    public function getDiscountedPriceAttribute()
+    {
+        $activeCampaign = $this->campaigns()->where('is_active', true)->first();
+        if ($activeCampaign) {
+            if ($activeCampaign->type === 'fixed') {
+                return max(0, $this->price - $activeCampaign->value);
+            } else {
+                return $this->price * (1 - $activeCampaign->value / 100);
+            }
+        }
+        return $this->price;
     }
 }

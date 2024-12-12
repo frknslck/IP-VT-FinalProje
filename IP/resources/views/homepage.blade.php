@@ -2,23 +2,28 @@
 
 @section('content')
 <div class="container mt-5">
-
     <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
+            @foreach($campaigns as $index => $campaign)
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}" class="{{ $loop->first ? 'active' : '' }}"></button>
+            @endforeach
         </div>
         <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://via.placeholder.com/1200x420?text=Sale+Up+to+50%25+Off" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="https://via.placeholder.com/1200x420?text=New+Collection+Available" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="https://via.placeholder.com/1200x420?text=Shop+Now+Best+Deals" class="d-block w-100" alt="...">
-            </div>
+            @foreach($campaigns as $index => $campaign)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                    <img src="{{ $campaign->image_url ?? 'https://via.placeholder.com/1200x420' }}" class="d-block w-100" alt="{{ $campaign->name }}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2>{{ $campaign->name }}</h2>
+                        <p>
+                            @if($campaign->type === 'fixed')
+                                Save ${{ number_format($campaign->value, 2) }} on selected items
+                            @else
+                                Get {{ number_format($campaign->value, 0) }}% off on selected items
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            @endforeach
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -27,9 +32,9 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
         </button>
     </div>
-
+    <hr>
     <div class="row text-center mb-5">
-        <h1 class="mb-4">Kategoriler</h1>
+        <h1 class="mb-4">Categories</h1>
         @foreach($categories as $category)
             @if ($category->parent_id == null)
                 <div class="col-md-4">
@@ -45,38 +50,12 @@
             @endif
         @endforeach
     </div>
-
-    <h2 class="mb-4">All Products</h2>
+    <hr>
+    <h1 class="text-center mb-4">Featured Products</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         @foreach($products as $product)
         <div class="col">
-            <div class="card h-100 position-relative">
-
-                <form action="{{ route('wishlist.toggle') }}" method="POST" class="wishlist-form position-absolute top-0 start-0 m-2">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" 
-                        class="btn btn-sm {{ Auth::user() && Auth::user()->wishlist->contains('product_id', $product->id) ? 'btn-danger' : 'btn-outline-danger' }}">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </form>
-            
-                @if($product->best_seller)
-                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best Seller</span>
-                @endif
-                <img src="{{ $product->image_url ?? 'https://via.placeholder.com/300x400' }}" class="card-img-top" alt="{{ $product->name }}">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ $product->name }}</h5>
-                    <p class="text-muted flex-grow-1">{{ Str::limit($product->description, 80) }}</p>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-bold">${{ number_format($product->price, 2) }}</span>
-                        <span class="badge bg-secondary"> 
-                            {{ $product->variants->count() > 0 ? $product->variants->count().' Variant(s)' : 'No Variants' }}
-                        </span>
-                    </div>
-                    <a href="{{ route('products.show', $product) }}" class="btn btn-primary w-100">View Details</a>
-                </div>
-            </div>
+            @include('partials.product-card')
         </div>
         @endforeach
     </div>
@@ -85,7 +64,6 @@
         {{ $products->links() }}
     </div>
 </div>
-
 @endsection
 
 @push('styles')
@@ -111,6 +89,22 @@
 
     .badge.bg-danger {
         font-size: 0.8rem;
+    }
+
+    .carousel-caption {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .carousel-caption h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .carousel-caption p {
+        font-size: 1.2rem;
     }
 
     @media (max-width: 768px) {

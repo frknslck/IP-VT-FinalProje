@@ -478,41 +478,57 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    public function createCampaigns(){
-        $campaigns = [
-            [
-                'name' => 'Summer Sale',
-                'start_date' => now(),
-                'end_date' => now()->addDays(30),
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Black Friday',
-                'start_date' => now(),
-                'end_date' => now()->addDays(10),
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Winter Clearance',
-                'start_date' => now(),
-                'end_date' => now()->addDays(60),
-                'is_active' => true,
-            ],
-        ];
+    public function createCampaigns()
+{
+    $campaigns = [
+        [
+            'name' => 'Summer Sale',
+            'type' => 'fixed',
+            'value' => 10.00,
+            'start_date' => now(),
+            'end_date' => now()->addDays(30),
+            'used_count' => 0,
+            'is_active' => true,
+        ],
+        [
+            'name' => 'Black Friday',
+            'type' => 'percentage',
+            'value' => 50.00,
+            'start_date' => now(),
+            'end_date' => now()->addDays(10),
+            'used_count' => 0,
+            'is_active' => true,
+        ],
+        [
+            'name' => 'Winter Clearance',
+            'type' => 'percentage',
+            'value' => 10.00,
+            'start_date' => now(),
+            'end_date' => now()->addDays(60),
+            'used_count' => 0,
+            'is_active' => true,
+        ],
+    ];
 
-        foreach ($campaigns as $campaignData) {
-            $campaign = Campaign::create($campaignData);
+    foreach ($campaigns as $campaignData) {
+        $campaign = Campaign::create($campaignData);
 
-            $productCount = Product::max('id');
-            for ($i = 1; $i <= $productCount; $i++) {
-                if (rand(0, 1)) {
-                    $alreadyAssigned = \DB::table('campaign_product')->where('product_id', $i)->exists();
-                    
-                    if (!$alreadyAssigned) {
-                        $campaign->products()->attach($i);
+        $products = Product::all();
+        foreach ($products as $product) {
+            $alreadyAssigned = \DB::table('campaign_product')->where('product_id', $product->id)->exists();
+            
+            if (!$alreadyAssigned) {
+                if ($campaign->type === 'fixed') {
+                    if ($product->price >= $campaign->value * 1.5) {
+                        $campaign->products()->attach($product->id);
+                    }
+                } else {
+                    if (rand(0, 1)) {
+                        $campaign->products()->attach($product->id);
                     }
                 }
             }
         }
     }
+}
 }
