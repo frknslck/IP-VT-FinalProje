@@ -17,9 +17,18 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $subcategories = $category->children;
-        $products = $category->products()->with(['campaigns' => function($query) {
-            $query->where('is_active', true);
-        }])->paginate(12);
+        if($category->parent_id === null){
+            $products = $category->getAllProducts()->with(['campaigns' => function($query) {
+                $query->where('is_active', true);
+            }])->paginate(12);
+        }else{
+            $products = $category->products()->with(['campaigns' => function($query) {
+                $query->where('is_active', true);
+            }])->paginate(12);
+        }
+        
+
+        // dd($products);
 
         return view('categories.show', compact('category', 'subcategories', 'products'));
     }

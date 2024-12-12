@@ -1,8 +1,8 @@
 @extends('layout')
 
 @section('content')
-<div class="container my-5">
-    <h1 class="text-center mb-5">Aktif Kampanyalar</h1>
+<div class="container">
+    <h1 class="text-center mb-5">Active Campaigns</h1>
 
     @foreach($campaigns as $index => $campaign)
         <div class="row align-items-center mb-5 campaign-row {{ $index % 2 == 0 ? '' : 'flex-row-reverse' }}">
@@ -18,16 +18,16 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <span class="h4">
                             @if($campaign->type === 'fixed')
-                                ${{ number_format($campaign->value, 2) }} İndirim
+                                ${{ number_format($campaign->value, 2) }} Discount
                             @else
-                                %{{ number_format($campaign->value, 0) }} İndirim
+                                %{{ number_format($campaign->value, 0) }} Discount
                             @endif
                         </span>
                         <span class="text-muted">
                             {{ $campaign->start_date->format('d.m.Y') }} - {{ $campaign->end_date->format('d.m.Y') }}
                         </span>
                     </div>
-                    <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-primary btn-lg">Alışverişe Başla</a>
+                    <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-primary btn-lg">Start Shopping</a>
                 </div>
             </div>
         </div>

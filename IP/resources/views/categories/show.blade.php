@@ -1,11 +1,11 @@
 @extends('layout')
 
 @section('content')
-<div class="container mt-4">
+<div class="container">
     <h1 class="text-center mb-5">{{ $category->name }}</h1>
 
     @if($subcategories->isNotEmpty())
-        <h2 class="mb-4 text-primary">Subcategories</h2>
+        <h2 class="mb-4 text-primary">More Categories of {{$category->name}}</h2>
         <div class="row">
             @foreach($subcategories as $subcategory)
                 <div class="col-md-4 mb-4">
@@ -24,7 +24,7 @@
         </div>
     @endif
 
-    <h2 class="mt-5 text-primary">Products</h2>
+    <h2 class="mt-5 mb-4 text-primary">All {{$category->name }} Products</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         @foreach($products as $product)
         <div class="col">

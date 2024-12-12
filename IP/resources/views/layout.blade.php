@@ -15,6 +15,7 @@
                 <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">FAQs</a></li> -->
                 <li class="nav-item"><a href="{{route('wishlist.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-heart"></i> Wishlist</a></li>
                 <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                <li class="nav-item"><a href="{{route('orders.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Orders</a></li>
                 <li class="nav-item"><a href="{{route('coupons.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-gift"></i> Coupons</a></li>
                 <li class="nav-item"><a href="{{route('campaigns.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-bullhorn"></i> Campaigns</a></li>
             </ul>
@@ -47,7 +48,9 @@
         </div>
     </header>
 
-    @yield('content')
+    <div class="mb-5">
+        @yield('content')
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>

@@ -9,7 +9,6 @@ use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Session;
 
 class ShoppingCartController extends Controller
 {
@@ -64,16 +63,22 @@ class ShoppingCartController extends Controller
         return back()->with('success', 'Product removed from cart successfully.');
     }
 
-    public function updateQuantity(Request $request, ShoppingCartItem $item)
+    public function updateQuantities(Request $request)
     {
         $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'quantities' => 'required|array',
+            'quantities.*' => 'required|integer|min:1',
         ]);
 
-        $item->quantity = $request->quantity;
-        $item->save();
+        foreach ($request->quantities as $itemId => $quantity) {
+            $item = ShoppingCartItem::find($itemId);
+            if ($item && $item->shopping_cart_id === $this->getOrCreateCart()->id) {
+                $item->quantity = $quantity;
+                $item->save();
+            }
+        }
 
-        return back()->with('success', 'Cart updated successfully.');
+        return back()->with('success', 'Cart quantities updated successfully.');
     }
 
     public function applyCoupon(Request $request)
@@ -100,13 +105,7 @@ class ShoppingCartController extends Controller
     {
         if (Auth::check()) {
             return ShoppingCart::firstOrCreate(
-                ['user_id' => Auth::id()],
-                ['session_id' => Session::getId()]
-            );
-        } else {
-            return ShoppingCart::firstOrCreate(
-                ['session_id' => Session::getId()]
-            );
+                ['user_id' => Auth::id()]);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\Address;
 use App\Models\Campaign;
 use App\Models\Coupon;
@@ -9,7 +10,6 @@ use App\Models\PaymentMethod;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use App\Models\Wishlist;
-use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Brand;
 use App\Models\Category;
@@ -20,7 +20,6 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Stock;
 use App\Models\Role;
-use App\Models\RoleUser;
 
 class DatabaseSeeder extends Seeder
 {
@@ -399,15 +398,18 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function createShoppingCartItems(){
-        for ($i = 0; $i < 10; $i++) {
+    private function createShoppingCartItems() {
+        for ($i = 0; $i < 5; $i++) {
+            $productVariantId = ProductVariant::orderBy('id', 'DESC')->first()->id;
+    
             ShoppingCartItem::create([
                 'shopping_cart_id' => 1,
-                'product_variant_id' => rand(1, 500),
+                'product_variant_id' => rand(1, $productVariantId),
                 'quantity' => rand(1, 5)
             ]);
         }
     }
+    
 
     private function createPaymentMethods(){
         $paymentmethods = [

@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 // Homepage
@@ -34,8 +35,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [ShoppingCartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [ShoppingCartController::class, 'addToCart'])->name('cart.add');
     Route::delete('/cart/remove/{item}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::patch('/cart/update-quantity/{item}', [ShoppingCartController::class, 'updateQuantity'])->name('cart.update-quantity');
+    Route::match(['patch', 'delete'], '/cart/update-quantities', [ShoppingCartController::class, 'updateQuantities'])->name('cart.update-quantities');
+
     Route::post('/cart/apply-coupon', [ShoppingCartController::class, 'applyCoupon'])->name('cart.apply-coupon');
+});
+
+// Checkout
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
 
 // Wishlist
@@ -59,12 +69,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
 Route::get('/campaigns/{campaign}', [CampaignController::class, 'show'])->name('campaigns.show');
 
-// User Dashboard
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 // User
 
 Route::middleware(['auth'])->group(function () {
@@ -76,6 +80,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/user/address/{address}', [UserController::class, 'updateAddress'])->name('user.updateAddress');
     Route::delete('/user/address/{address}', [UserController::class, 'deleteAddress'])->name('user.deleteAddress');
 });
+
+// User Dashboard
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // Profile
 

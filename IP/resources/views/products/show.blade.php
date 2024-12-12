@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="container mt-3">
+<div class="container">
     <div class="row">
         <div class="col-md-6">
             <img src="{{ $product->image_url ?? 'https://via.placeholder.com/400x400' }}" alt="{{ $product->name }}" class="img-fluid">

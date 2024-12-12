@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-3">Your Coupons</h1>
+    <h1 class="text-center mb-5">Your Coupons</h1>
     @if ($coupons->isEmpty())
         <p>You don't have any coupons assigned to you.</p>
     @else

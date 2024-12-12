@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="container my-5">
+<div class="container">
     <h1 class="text-center mb-5">{{ $campaign->name }}</h1>
     
     <div class="row mb-4">

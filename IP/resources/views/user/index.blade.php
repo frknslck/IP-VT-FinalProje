@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="container mt-3 mb-5">
+<div class="container">
     <h2 class="mb-4">Profile Information</h2>
 
     <form action="{{ route('user.update') }}" method="POST" class="mb-5">

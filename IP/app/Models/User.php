@@ -63,4 +63,14 @@ class User extends Authenticatable
     {
         return $this->hasRole('admin');
     }
+
+    public function cart()
+    {
+        return $this->hasOne(ShoppingCart::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
 }

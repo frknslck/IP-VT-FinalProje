@@ -1,8 +1,8 @@
 @extends('layout')
 
 @section('content')
-<div class="container mt-4 mb-5">
-    <h1>Your Wishlist</h1>
+<div class="container">
+    <h1 class="text-center mb-5">Your Wishlist</h1>
 
     @if($wishlistItems->count() > 0)
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
