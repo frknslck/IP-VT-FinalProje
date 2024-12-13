@@ -16,6 +16,7 @@
                 <li class="nav-item"><a href="{{route('wishlist.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-heart"></i> Wishlist</a></li>
                 <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Cart</a></li>
                 <li class="nav-item"><a href="{{route('orders.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li class="nav-item"><a href="{{route('reviews.index')}}" class="nav-link link-body-emphasis px-2"><i class="fa-solid fa-star-half-stroke"></i> Reviews</a></li>
                 <li class="nav-item"><a href="{{route('coupons.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-gift"></i> Coupons</a></li>
                 <li class="nav-item"><a href="{{route('campaigns.index')}}" class="nav-link link-body-emphasis px-2"><i class="fas fa-bullhorn"></i> Campaigns</a></li>
             </ul>
@@ -61,6 +62,5 @@
             }
         });
     </script>
-    @stack('scripts')
 </body>
 </html>

@@ -145,11 +145,11 @@ class DatabaseSeeder extends Seeder
         $colors = [
             ['name' => 'Black', 'hex_code' => '#000000', 'chance' => 0.40],
             ['name' => 'White', 'hex_code' => '#FFFFFF', 'chance' => 0.35],
-            ['name' => 'Red', 'hex_code' => '#FF0000', 'chance' => 0.20],
-            ['name' => 'Blue', 'hex_code' => '#0000FF', 'chance' => 0.10],
+            ['name' => 'Red', 'hex_code' => '#FF0000', 'chance' => 0.30],
+            ['name' => 'Blue', 'hex_code' => '#0000FF', 'chance' => 0.30],
             ['name' => 'Green', 'hex_code' => '#008000', 'chance' => 0.25],
             ['name' => 'Orange', 'hex_code' => '#FFA500', 'chance' => 0.15],
-            ['name' => 'Purple', 'hex_code' => '#800080', 'chance' => 0.15],
+            ['name' => 'Purple', 'hex_code' => '#800080', 'chance' => 0.25],
             ['name' => 'Pink', 'hex_code' => '#FFC0CB', 'chance' => 0.30],
             ['name' => 'Gray', 'hex_code' => '#808080', 'chance' => 0.25],
         ];
@@ -204,13 +204,13 @@ class DatabaseSeeder extends Seeder
     private function createMaterials()
     {
         $materials = [
-            ['name' => 'Cotton', 'description' => '100% Cotton', 'chance' => 0.55],
-            ['name' => 'Cotton Blend', 'description' => '60% Cotton 40% Polyester', 'chance' => 0.20],
+            ['name' => 'Cotton', 'description' => '100% Cotton', 'chance' => 0.40],
+            ['name' => 'Cotton Blend', 'description' => '60% Cotton 40% Polyester', 'chance' => 0.50],
             ['name' => 'Polyester', 'description' => '100% Polyester', 'chance' => 0.35],
             ['name' => 'Wool', 'description' => '100% Wool', 'chance' => 0.25],
-            ['name' => 'Silk', 'description' => '100% Silk', 'chance' => 0.15],
+            ['name' => 'Silk', 'description' => '100% Silk', 'chance' => 0.30],
             ['name' => 'Linen', 'description' => '100% Linen', 'chance' => 0.20],
-            ['name' => 'Leather', 'description' => '100% Leather', 'chance' => 0.20]
+            ['name' => 'Leather', 'description' => '100% Leather', 'chance' => 0.50]
         ];
         foreach ($materials as $material) {
             Material::create($material);
@@ -233,7 +233,7 @@ class DatabaseSeeder extends Seeder
                         'price' => rand(10, 100),
                         'brand_id' => $brand->id,
                         'is_active' => true,
-                        'best_seller' => rand(0, 1) == 1,
+                        'best_seller' => mt_rand(1, 100) <= 25,
                     ]);
 
                     $product->categories()->attach($category->id);

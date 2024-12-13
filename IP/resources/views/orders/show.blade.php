@@ -21,14 +21,22 @@
                     <span>${{ number_format($order->total_amount, 2) }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between">
+                    <span>Payment Method</span>
+                    <span>{{ $paymentMethod->name }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
                     <span>Order Date:</span>
                     <span>{{ $order->created_at->format('d-m-Y H:i') }}</span>
                 </li>
-                @if($order->notes)
-                <li class="list-group-item">
-                    <span>Notes:</span>
-                    <p class="mt-2">{{ $order->notes }}</p>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Delivery Address:</span>
+                    <span>{{ $deliveryAddress->country.', '.$deliveryAddress->city.', '.$deliveryAddress->neighborhood.', '.$deliveryAddress->building_no.', '.$deliveryAddress->apartment_no }}</span>
                 </li>
+                @if($order->notes)
+                    <li class="list-group-item">
+                        <span>Notes:</span>
+                        <p class="mt-2">{{ $order->notes }}</p>
+                    </li>
                 @endif
             </ul>
         </div>

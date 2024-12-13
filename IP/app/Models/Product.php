@@ -62,4 +62,14 @@ class Product extends Model
         }
         return $this->price;
     }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function getRatingCountAttribute()
+    {
+        return $this->reviews()->count();
+    }
 }

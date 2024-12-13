@@ -14,4 +14,14 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(ProductVariant::class);
     }
+
+    public function product()
+    {
+        return $this->productVariant->product();
+    }
+
+    // public function orders()
+    // {
+    //     return $this->belongsTo(Order::class);
+    // }
 }

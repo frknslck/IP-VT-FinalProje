@@ -40,6 +40,10 @@ return new class extends Migration
             $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
+
+        Schema::table('product_reviews', function (Blueprint $table) {
+            $table->unique(['product_id', 'user_id']);
+        });
     }
 
     public function down()

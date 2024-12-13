@@ -23,13 +23,4 @@ class CampaignController extends Controller
         $products = $campaign->products()->paginate(12);
         return view('campaigns.show', compact('campaign', 'products'));
     }
-
-    public function carousel()
-    {
-        $campaigns = Campaign::where('is_active', true)->get();
-        $categories = Category::whereNull('parent_id')->get();
-        $products = Product::paginate(12);
-
-        return view('homepage', compact('campaigns', 'categories', 'products'));
-    }
 }

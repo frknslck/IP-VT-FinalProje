@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Color;
-use App\Models\Size;
-use App\Models\Material;
 use App\Models\Category;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
@@ -17,11 +14,15 @@ class ProductController extends Controller
     {
         $categories = Category::whereNull('parent_id')->get();
         $campaigns = Campaign::where('is_active', true)->get();
-        $products = Product::with(['campaigns' => function($query) {
-            $query->where('is_active', true);
-        }])->paginate(12);
 
-        return view('home', compact('categories', 'products', 'campaigns'));
+        $products = Product::where('best_seller', true)
+        ->with(['campaigns' => function($query) {
+            $query->where('is_active', true);
+        }])
+        ->paginate(12);
+
+
+        return view('homepage', compact('categories', 'products', 'campaigns'));
     }
 
     public function show(Product $product)
@@ -53,7 +54,23 @@ class ProductController extends Controller
         $sizeNames = $sizes->pluck('name', 'id');
         $materialNames = $materials->pluck('name', 'id');
 
-        return view('products.show', compact('product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials', 'variantOptions', 'sizeNames', 'materialNames'));
+        $reviews = $product->reviews()->with('user')->paginate(5);
+
+        $userReview = auth()->user() ? $product->reviews()->where('user_id', auth()->id())->first() : null;
+
+        $userPurchasedProduct = false;
+        if (auth()->check()) {
+            $userPurchasedProduct = auth()->user()->orders()
+                ->whereHas('details.productVariant', function ($query) use ($product) {
+                    $query->where('product_id', $product->id);
+                })->exists();
+        }
+
+        return view('products.show', compact(
+            'product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials', 
+            'variantOptions', 'sizeNames', 'materialNames', 'reviews', 'userReview', 
+            'userPurchasedProduct'
+        ));
     }
 
     public function searchProductById(Request $request)

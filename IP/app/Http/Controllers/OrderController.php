@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\PaymentMethod;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
@@ -22,7 +24,8 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'payment_method_id' => $request->payment_method_id,
-                'order_number' => uniqid('ORDER-'),
+                'address_id' => $request->address_id,
+                'order_number' => 'ORDER-'.auth()->id().'-'.uniqid().'-'.time(),
                 'total_amount' => $cart->total,
                 'status' => 'pending',
                 'notes' => $request->notes,
@@ -62,6 +65,9 @@ class OrderController extends Controller
             abort(403, 'Unauthorized access.');
         }
         
-        return view('orders.show', compact('order'));
+        $deliveryAddress = auth()->user()->addresses()->find($order->address_id);
+        $paymentMethod = PaymentMethod::find($order->payment_method_id);
+
+        return view('orders.show', compact('order', 'deliveryAddress', 'paymentMethod'));
     }
 }

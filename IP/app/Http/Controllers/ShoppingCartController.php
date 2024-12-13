@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentMethod;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use App\Models\ProductVariant;
@@ -15,7 +16,9 @@ class ShoppingCartController extends Controller
     public function index()
     {
         $cart = $this->getOrCreateCart();
-        return view('shopping-cart.index', compact('cart'));
+        $addresses = auth()->user()->addresses;
+        $payment_methods = PaymentMethod::all();
+        return view('shopping-cart.index', compact('cart', 'addresses', 'payment_methods'));
     }
 
     public function addToCart(Request $request)

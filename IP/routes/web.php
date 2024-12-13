@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
@@ -14,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 // Homepage
 
 Route::get('/', [ProductController::class, 'index'])->name('homepage');
-Route::get('/', [CampaignController::class, 'carousel'])->name('homepage');
 
 // Product
 
@@ -46,6 +46,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+});
+
+// Reviews
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
 // Wishlist

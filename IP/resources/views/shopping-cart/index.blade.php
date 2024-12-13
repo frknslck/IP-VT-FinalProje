@@ -92,7 +92,20 @@
 
                     <form action="{{ route('checkout.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="payment_method_id" value="1">
+                        <select name="payment_method_id" id="payment_method_id" class="form-select mt-3" required>
+                            <option value="">Select a payment method</option>
+                            @foreach($payment_methods as $method)
+                                <option value="{{ $method->id }}">{{ $method->name }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="address_id" id="address_id" class="form-select mt-3" required>
+                            <option value="">Select your delivery address</option>
+                            @foreach($addresses as $address)
+                                <option value="{{ $address->id }}">{{ $address->country.', '.$address->city.', '.$address->neighborhood }}</option>
+                            @endforeach
+                        </select>
+                        
                         <textarea name="notes" class="form-control mt-3" placeholder="Order notes (optional)"></textarea>
                         <button type="submit" class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
                     </form>
