@@ -224,7 +224,6 @@
     }
 </style>
 
-@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const colorSelect = document.getElementById('color');
@@ -268,5 +267,4 @@
         });
     });
 </script>
-@endpush
 

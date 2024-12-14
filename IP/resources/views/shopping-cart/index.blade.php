@@ -10,53 +10,59 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Products</h5>
-                    <form action="{{ route('cart.update-quantities') }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($cart->items as $item)
-                                <tr>
-                                    <td>
-                                        {{ $item->productVariant->product->name }}<br>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($cart->items as $item)
+                            <tr>
+                                <td>
+                                    {{ $item->productVariant->product->name }}<br>
+                                    <small>
                                         Variant: {{ $item->productVariant->color->name }} - 
                                         {{ $item->productVariant->size->name }} - 
                                         {{ $item->productVariant->material->name }}
-                                    </td>
-                                    <td>
-                                        @if($item->productVariant->getEffectivePrice() < $item->productVariant->price)
-                                            <span class="text-muted text-decoration-line-through">${{ number_format($item->productVariant->price, 2) }}</span>
-                                            <span class="text-danger">${{ number_format($item->productVariant->getEffectivePrice(), 2) }}</span>
-                                        @else
-                                            ${{ number_format($item->productVariant->getEffectivePrice(), 2) }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <input type="number" name="quantities[{{ $item->id }}]" value="{{ $item->quantity }}" min="1" class="form-control">
-                                    </td>
-                                    <td>${{ number_format($item->total_price, 2) }}</td>
-                                    <td>
-                                        <form action="{{ route('cart.remove', $item) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <button type="submit" class="btn btn-primary">Update Quantities</button>
-                    </form>
+                                    </small>
+                                </td>
+                                <td>
+                                    @if($item->productVariant->getEffectivePrice() < $item->productVariant->price)
+                                        <span class="text-muted text-decoration-line-through">${{ number_format($item->productVariant->price, 2) }}</span>
+                                        <span class="text-danger">${{ number_format($item->productVariant->getEffectivePrice(), 2) }}</span>
+                                    @else
+                                        ${{ number_format($item->productVariant->getEffectivePrice(), 2) }}
+                                    @endif
+                                </td>
+                                <td>
+                                    <form action="{{ route('cart.update-quantities') }}" method="POST" class="d-flex align-items-center justify-content-start gap-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">-</button>
+                                        <div class="d-flex align-items-center justify-content-center border rounded bg-light" style="width: 50px; height: 32px; font-weight: bold;">
+                                            {{ $item->quantity }}
+                                        </div>
+                                        <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">+</button>
+                                        <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                    </form>
+                                </td>
+                                <td>${{ number_format($item->total_price, 2) }}</td>
+                                <td>
+                                    <form action="{{ route('cart.remove', $item) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -80,6 +86,19 @@
                             <strong>Total:</strong>
                             <strong>${{ number_format($cart->total, 2) }}</strong>
                         </li>
+                        @if($cart->coupon_id)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Applied Coupon:</span>
+                            <div>
+                                <span class="badge bg-success">{{ $cart->coupon->code }}</span>
+                                <form action="{{ route('cart.remove-coupon') }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-2">Remove</button>
+                                </form>
+                            </div>
+                        </li>
+                        @endif
                     </ul>
 
                     <form action="{{ route('cart.apply-coupon') }}" method="POST" class="mt-3">
@@ -90,8 +109,11 @@
                         </div>
                     </form>
 
-                    <form action="{{ route('checkout.store') }}" method="POST">
+                    <form action="{{ route('checkout.store') }}" method="POST" class="mt-3">
                         @csrf
+                        @if($cart->coupon_id)
+                            <input type="hidden" name="coupon_id" value="{{ $cart->coupon_id }}">
+                        @endif
                         <select name="payment_method_id" id="payment_method_id" class="form-select mt-3" required>
                             <option value="">Select a payment method</option>
                             @foreach($payment_methods as $method)

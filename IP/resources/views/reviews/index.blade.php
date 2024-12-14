@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container my-5">
-    <h1 class="text-center mb-5">My Orders & Reviews</h1>
+    <h1 class="text-center mb-5">My Reviews</h1>
 
     @foreach ($ordersWithDetails as $order)
     <div class="card shadow-sm mb-4">
@@ -107,7 +107,6 @@
     }
 </style>
 
-@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
     const reviewModal = document.getElementById('reviewModal');
@@ -135,4 +134,3 @@
     }
 });
 </script>
-@endpush

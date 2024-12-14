@@ -69,19 +69,22 @@ class ShoppingCartController extends Controller
     public function updateQuantities(Request $request)
     {
         $request->validate([
-            'quantities' => 'required|array',
-            'quantities.*' => 'required|integer|min:1',
+            'action' => 'required|in:increase,decrease',
+            'item_id' => 'required|exists:shopping_cart_items,id',
         ]);
-
-        foreach ($request->quantities as $itemId => $quantity) {
-            $item = ShoppingCartItem::find($itemId);
-            if ($item && $item->shopping_cart_id === $this->getOrCreateCart()->id) {
-                $item->quantity = $quantity;
-                $item->save();
+    
+        $item = ShoppingCartItem::find($request->item_id);
+    
+        if ($item && $item->shopping_cart_id === $this->getOrCreateCart()->id) {
+            if ($request->action === 'increase') {
+                $item->quantity++;
+            } elseif ($request->action === 'decrease' && $item->quantity > 1) {
+                $item->quantity--;
             }
+            $item->save();
         }
-
-        return back()->with('success', 'Cart quantities updated successfully.');
+    
+        return back()->with('success', 'Cart quantity updated successfully.');
     }
 
     public function applyCoupon(Request $request)
@@ -89,26 +92,40 @@ class ShoppingCartController extends Controller
         $request->validate([
             'code' => 'required|string',
         ]);
-
+    
         $coupon = Coupon::where('code', $request->code)->first();
-
-
-        if (!$coupon || !$coupon->is_active) {
+    
+        if (!$coupon) {
             return back()->with('error', 'Invalid coupon code.');
         }
-
+        
+        if($coupon->usage_limit != null){
+            if ($coupon->used_count >= $coupon->usage_limit) {
+                return back()->with('error', 'This coupon has reached its maximum usage limit.');
+            }
+        }
+    
         $cart = $this->getOrCreateCart();
+    
         $cart->coupon_id = $coupon->id;
         $cart->save();
-
+    
         return back()->with('success', 'Coupon applied successfully.');
+    }
+    
+    public function removeCoupon()
+    {
+        $cart = $this->getOrCreateCart();
+        $cart->coupon_id = null;
+        $cart->save();
+
+        return back()->with('success', 'Coupon removed successfully.');
     }
 
     private function getOrCreateCart()
     {
         if (Auth::check()) {
-            return ShoppingCart::firstOrCreate(
-                ['user_id' => Auth::id()]);
+            return ShoppingCart::firstOrCreate(['user_id' => Auth::id()]);
         }
     }
 }

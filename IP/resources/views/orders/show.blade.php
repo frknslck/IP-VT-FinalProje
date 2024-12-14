@@ -21,6 +21,13 @@
                     <span>${{ number_format($order->total_amount, 2) }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between">
+                    <span>Used Coupon:</span>
+                    <span>{{ $usedCoupon ? (($usedCoupon->type == 'fixed' 
+                                ? $usedCoupon->code.' -> $'.$usedCoupon->value
+                                : $usedCoupon->code.' -> %'.$usedCoupon->value).' Discount')
+                            : 'No coupon was used for this order.'}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
                     <span>Payment Method</span>
                     <span>{{ $paymentMethod->name }}</span>
                 </li>

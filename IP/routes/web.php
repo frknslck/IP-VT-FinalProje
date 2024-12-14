@@ -34,10 +34,10 @@ Route::patch('/product-variants/{productVariant}/update-stock', [ProductVariantC
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [ShoppingCartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [ShoppingCartController::class, 'addToCart'])->name('cart.add');
+    Route::patch('/cart/update-quantities', [ShoppingCartController::class, 'updateQuantities'])->name('cart.update-quantities');
     Route::delete('/cart/remove/{item}', [ShoppingCartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::match(['patch', 'delete'], '/cart/update-quantities', [ShoppingCartController::class, 'updateQuantities'])->name('cart.update-quantities');
-
     Route::post('/cart/apply-coupon', [ShoppingCartController::class, 'applyCoupon'])->name('cart.apply-coupon');
+    Route::delete('/cart/remove-coupon', [ShoppingCartController::class, 'removeCoupon'])->name('cart.remove-coupon');
 });
 
 // Checkout
