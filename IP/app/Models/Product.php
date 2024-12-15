@@ -72,4 +72,19 @@ class Product extends Model
     {
         return $this->reviews()->count();
     }
+
+    public function getPrice()
+    {
+        return $this->variants->isNotEmpty() ? $this->variants->min('price') : $this->price;
+    }
+
+    public function getMinPriceAttribute()
+    {
+        return $this->variants->min('price');
+    }
+
+    public function getMaxPriceAttribute()
+    {
+        return $this->variants->max('price');
+    }
 }

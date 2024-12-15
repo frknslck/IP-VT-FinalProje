@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Flasher\Prime\FlasherInterface;
 
 class CategoryController extends Controller
 {
@@ -26,9 +25,6 @@ class CategoryController extends Controller
                 $query->where('is_active', true);
             }])->paginate(12);
         }
-        
-
-        // dd($products);
 
         return view('categories.show', compact('category', 'subcategories', 'products'));
     }

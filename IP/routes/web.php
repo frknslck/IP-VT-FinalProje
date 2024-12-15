@@ -8,13 +8,14 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ActionController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 // Homepage
 
-Route::get('/', [ProductController::class, 'index'])->name('homepage');
+Route::get('/', [ProductController::class, 'home'])->name('homepage');
 
 // Product
 
@@ -28,6 +29,11 @@ Route::get('/categories/{category}', [CategoryController::class, 'show'])->name(
 // Product Variant - Stock
 
 Route::patch('/product-variants/{productVariant}/update-stock', [ProductVariantController::class, 'updateStock'])->name('product-variants.update-stock');
+
+// Shop
+
+Route::get('/shop', [ProductController::class, 'index'])->name('shop.index');
+Route::get('/shop/sizes-for-category/{categoryId}', [ProductController::class, 'getSizesForCategory']);
 
 // Shopping Cart
 
@@ -86,6 +92,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/address', [UserController::class, 'addAddress'])->name('user.addAddress');
     Route::put('/user/address/{address}', [UserController::class, 'updateAddress'])->name('user.updateAddress');
     Route::delete('/user/address/{address}', [UserController::class, 'deleteAddress'])->name('user.deleteAddress');
+});
+
+// Actions
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/actions', [ActionController::class, 'index'])->name('action-panel.index');
 });
 
 // User Dashboard

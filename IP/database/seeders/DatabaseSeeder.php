@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
 
     private function createRoles()
     {
-        $roles = ['Admin', 'Staff', 'Customer', 'Blogger'];
+        $roles = ['Admin', 'Corp', 'Customer', 'Blogger'];
 
         foreach ($roles as $role) {
             Role::create(['name' => $role]);
@@ -62,11 +62,18 @@ class DatabaseSeeder extends Seeder
                 'roles' => ['Admin']
             ],
             [
+                'name' => 'nike',
+                'email' => 'nike@gmail.com',
+                'tel_no' => '05055055501',
+                'password' => bcrypt('fsb12345'),
+                'roles' => ['Corp']
+            ],
+            [
                 'name' => 'yağmur kaya',
                 'email' => 'ymrky@gmail.com',
                 'tel_no' => '05055322682',
                 'password' => bcrypt('fsb12345'),
-                'roles' => ['Staff', 'Blogger']
+                'roles' => ['Blogger']
             ],
             [
                 'name' => 'batu abi',
@@ -120,9 +127,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Women',
                 'slug' => 'women',
                 'children' => [
-                    ['name' => 'Woman Clothing', 'slug' => 'women-clothing'],
-                    ['name' => 'Woman Shoes', 'slug' => 'women-shoes'],
-                    ['name' => 'Woman Bags', 'slug' => 'women-bags'],
+                    ['name' => 'Women Clothing', 'slug' => 'women-clothing'],
+                    ['name' => 'Women Shoes', 'slug' => 'women-shoes'],
+                    ['name' => 'Women Bags', 'slug' => 'women-bags'],
                 ],
             ],
             [

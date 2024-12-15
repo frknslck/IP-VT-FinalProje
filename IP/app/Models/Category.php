@@ -33,4 +33,20 @@ class Category extends Model
                   ->orWhere('categories.parent_id', $this->id);
         });
     }
+
+    public function getFormattedName()
+    {
+        if (!$this->parent) {
+            return $this->name;
+        }
+    
+        $parentName = $this->parent->name;
+        $childName = $this->name;
+    
+        if (strpos($childName, $parentName) === 0) {
+            $childName = trim(substr($childName, strlen($parentName)));
+        }
+    
+        return $parentName . ' - ' . $childName;
+    }
 }

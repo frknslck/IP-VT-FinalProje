@@ -24,6 +24,9 @@
             <ul class="nav">
                 @if(Auth::check())
                     <li class="nav-item"><a href="{{route('user.index')}}" class="nav-link link-body-emphasis px-2"><i class="fa-solid fa-user"></i> Profile</a></li>
+                    @if(auth()->user()->roles->first()->name !== 'Customer')
+                        <li class="nav-item"><a href="{{route('action-panel.index')}}" class="nav-link link-body-emphasis px-2"><i class="fa-solid fa-cogs"></i> Action Panel</a></li>
+                    @endif
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf
@@ -43,10 +46,19 @@
                 <img src="/icon.png" alt="nightingale" class="me-2" width="45">
                 <span class="fs-4">Nightingale Shop</span>
             </a>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search" action="{{ route('products.search', ['id' => '']) }}" method="GET">
-                <input type="search" class="form-control" name="id" placeholder="Enter product id..." aria-label="Search" id="search_id">
-                <button type="submit" style="display: none;"></button>
-            </form>
+            <div class="d-flex align-items-center">
+                <form class="me-3" role="search" action="{{ route('products.search', ['id' => '']) }}" method="GET">
+                    <div class="input-group">
+                        <input type="search" class="form-control" name="id" placeholder="Enter product id..." aria-label="Search" id="search_id">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <a href="{{ route('shop.index') }}" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag me-2"></i>Shop
+                </a>
+            </div>
         </div>
     </header>
 

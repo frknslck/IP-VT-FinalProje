@@ -54,9 +54,9 @@
     <h1 class="text-center mb-4">Featured Products</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         @foreach($products as $product)
-        <div class="col">
-            @include('partials.product-card')
-        </div>
+            <div class="col">
+                @include('partials.product-card')
+            </div>
         @endforeach
     </div>
 

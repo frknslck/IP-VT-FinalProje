@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\Color;
+use App\Models\Size;
+use App\Models\Material;
 use App\Models\Category;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
@@ -10,7 +14,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function home()
     {
         $categories = Category::whereNull('parent_id')->get();
         $campaigns = Campaign::where('is_active', true)->get();
@@ -23,6 +27,76 @@ class ProductController extends Controller
 
 
         return view('homepage', compact('categories', 'products', 'campaigns'));
+    }
+
+    public function index(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->filled('category')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->category);
+            });
+        }
+
+        // Combine color, size, and material filters
+        if ($request->filled('color') || $request->filled('size') || $request->filled('material')) {
+            $query->whereHas('variants', function ($variantQuery) use ($request) {
+                if ($request->filled('color')) {
+                    $variantQuery->where('color_id', $request->color);
+                }
+                if ($request->filled('size')) {
+                    $variantQuery->where('size_id', $request->size);
+                }
+                if ($request->filled('material')) {
+                    $variantQuery->where('material_id', $request->material);
+                }
+            });
+        }
+
+        if ($request->filled('min_price') && $request->filled('max_price')) {
+            $query->whereHas('variants', function ($q) use ($request) {
+                $q->whereBetween('price', [$request->min_price, $request->max_price]);
+            });
+        }
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        $query->with(['variants.color', 'variants.size', 'variants.material', 'categories', 'campaigns' => function($q) {
+            $q->where('is_active', true);
+        }]);
+
+        $products = $query->paginate(12);
+
+        $categories = Category::whereNotNull('parent_id')->get();
+        $colors = Color::all();
+        $sizes = Size::all();
+        $materials = Material::all();
+
+        $minPrice = Product::join('product_variants', 'products.id', '=', 'product_variants.product_id')
+            ->min('product_variants.price');
+        $maxPrice = Product::join('product_variants', 'products.id', '=', 'product_variants.product_id')
+            ->max('product_variants.price');
+
+        return view('shop.index', compact('products', 'categories', 'colors', 'sizes', 'materials', 'minPrice', 'maxPrice'));
+    }
+
+    public function getSizesForCategory($categoryId)
+    {
+        $sizes = Size::whereHas('productVariants.product.categories', function ($query) use ($categoryId) {
+            $query->where('categories.id', $categoryId);
+        })->get();
+
+        return response()->json($sizes);
     }
 
     public function show(Product $product)
