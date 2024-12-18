@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
@@ -71,8 +73,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Coupons
 
-use App\Http\Controllers\CouponController;
-
 Route::middleware('auth')->group(function () {
     Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
 });
@@ -94,10 +94,42 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/user/address/{address}', [UserController::class, 'deleteAddress'])->name('user.deleteAddress');
 });
 
+// Notifications
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
+});
+
 // Actions
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/actions', [ActionController::class, 'index'])->name('action-panel.index');
+
+    // Category Actions
+    Route::post('/actions/categories', [CategoryController::class, 'store'])->name('action-panel.store-category');
+    Route::put('/actions/categories/{category}', [CategoryController::class, 'update'])->name('action-panel.update-category');
+    Route::delete('/actions/categories/{category}', [CategoryController::class, 'delete'])->name('action-panel.delete-category');
+
+    // Campaign Actions
+    Route::post('/actions/campaigns', [CampaignController::class, 'store'])->name('action-panel.store-campaign');
+    Route::put('/actions/campaigns/{campaign}', [CampaignController::class, 'update'])->name('action-panel.update-campaign');
+    Route::delete('/actions/campaigns/{campaign}', [CampaignController::class, 'delete'])->name('action-panel.delete-campaign');
+    
+    // Coupon Actions
+    Route::post('/actions/coupon', [CouponController::class, 'store'])->name('action-panel.store-coupon');
+    Route::put('/actions/coupon/{coupon}', [CouponController::class, 'update'])->name('action-panel.update-coupon');
+    Route::delete('/actions/coupon/{coupon}', [CouponController::class, 'delete'])->name('action-panel.delete-coupon');
+
+    // Product Actions
+    Route::post('/actions/product', [ProductController::class, 'store'])->name('action-panel.store-product');
+    Route::put('/actions/product/{product}', [ProductController::class, 'update'])->name('action-panel.update-product');
+    Route::delete('/actions/product/{product}', [ProductController::class, 'delete'])->name('action-panel.delete-product');
+
+    // Notifications
+
+    Route::post('/actions/notifications', [NotificationController::class, 'send'])->name('action-panel.send-notification');
+
 });
 
 // User Dashboard

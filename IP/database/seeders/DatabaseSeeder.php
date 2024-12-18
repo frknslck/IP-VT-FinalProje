@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Action;
 use Illuminate\Database\Seeder;
 use App\Models\Address;
 use App\Models\Campaign;
@@ -20,6 +21,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Stock;
 use App\Models\Role;
+use App\Models\Notification;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,6 +42,7 @@ class DatabaseSeeder extends Seeder
         $this->createPaymentMethods();
         $this->createCoupons();
         $this->createCampaigns();
+        $this->createActions();
     }
 
     private function createRoles()
@@ -74,14 +77,7 @@ class DatabaseSeeder extends Seeder
                 'tel_no' => '05055322682',
                 'password' => bcrypt('fsb12345'),
                 'roles' => ['Blogger']
-            ],
-            [
-                'name' => 'batu abi',
-                'email' => 'batu@gmail.com',
-                'tel_no' => '05055055500',
-                'password' => bcrypt('fsb12345'),
-                'roles' => ['Customer']
-            ],
+            ]
         ];
 
         foreach ($users as $userData) {
@@ -118,32 +114,51 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Men',
                 'slug' => 'men',
                 'children' => [
-                    ['name' => 'Men Clothing', 'slug' => 'men-clothing'],
-                    ['name' => 'Men Shoes', 'slug' => 'men-shoes'],
-                    ['name' => 'Men Bags', 'slug' => 'men-bags'],
+                    ['name' => 'Men Clothing', 'slug' => 'men-clothing', 'image_url' => 'https://i.ibb.co/k3QQQNQ/R0216-AZ-24-AU-BK27-01-01.jpg',],
+                    ['name' => 'Men Shoes', 'slug' => 'men-shoes', 'image_url' => 'https://i.ibb.co/k3QQQNQ/R0216-AZ-24-AU-BK27-01-01.jpg',],
+                    ['name' => 'Men Bags', 'slug' => 'men-bags', 'image_url' => 'https://i.ibb.co/k3QQQNQ/R0216-AZ-24-AU-BK27-01-01.jpg',],
                 ],
+                'image_url' => 'https://i.ibb.co/k3QQQNQ/R0216-AZ-24-AU-BK27-01-01.jpg',
             ],
             [
                 'name' => 'Women',
                 'slug' => 'women',
                 'children' => [
-                    ['name' => 'Women Clothing', 'slug' => 'women-clothing'],
-                    ['name' => 'Women Shoes', 'slug' => 'women-shoes'],
-                    ['name' => 'Women Bags', 'slug' => 'women-bags'],
+                    ['name' => 'Women Clothing', 'slug' => 'women-clothing', 'image_url' => 'https://i.ibb.co/z2s2wHY/Y3411-AZ-22-CW-RD70-01-02.jpg',],
+                    ['name' => 'Women Shoes', 'slug' => 'women-shoes', 'image_url' => 'https://i.ibb.co/z2s2wHY/Y3411-AZ-22-CW-RD70-01-02.jpg',],
+                    ['name' => 'Women Bags', 'slug' => 'women-bags', 'image_url' => 'https://i.ibb.co/z2s2wHY/Y3411-AZ-22-CW-RD70-01-02.jpg',],
                 ],
+                'image_url' => 'https://i.ibb.co/z2s2wHY/Y3411-AZ-22-CW-RD70-01-02.jpg',
             ],
             [
                 'name' => 'Kids',
                 'slug' => 'kids',
                 'children' => [
-                    ['name' => 'Kids Clothing', 'slug' => 'kids-clothing'],
-                    ['name' => 'Kids Shoes', 'slug' => 'kids-shoes'],
-                    ['name' => 'Kids Pajamas', 'slug' => 'kids-pajamas'],
+                    ['name' => 'Kids Clothing', 'slug' => 'kids-clothing', 'image_url' => 'https://i.ibb.co/mtQbhKh/PANCOOO7.png'],
+                    ['name' => 'Kids Shoes', 'slug' => 'kids-shoes', 'image_url' => 'https://i.ibb.co/mtQbhKh/PANCOOO7.png'],
+                    ['name' => 'Kids Pajamas', 'slug' => 'kids-pajamas', 'image_url' => 'https://i.ibb.co/mtQbhKh/PANCOOO7.png'],
                 ],
+                'image_url' => 'https://i.ibb.co/mtQbhKh/PANCOOO7.png',
             ],
         ];
         foreach ($categories as $categoryData) {
             $this->createCategory($categoryData);
+        }
+    }
+
+    private function createCategory(array $data, $parentId = null)
+    {
+        $category = Category::create([
+            'name' => $data['name'],
+            'slug' => $data['slug'],
+            'image_url' => $data['image_url'],
+            'parent_id' => $parentId,
+        ]);
+
+        if (isset($data['children']) && is_array($data['children'])) {
+            foreach ($data['children'] as $child) {
+                $this->createCategory($child, $category->id);
+            }
         }
     }
 
@@ -231,25 +246,101 @@ class DatabaseSeeder extends Seeder
         $colors = Color::all();
         $materials = Material::all();
 
+        $image_urls = [
+            [
+                'category' => 'men-clothing',
+                'image_url' => 'https://i.ibb.co/jg5hmCz/D0449-AX-24-AU-NM18-01-3.jpg'
+            ],
+            [
+                'category' => 'men-clothing',
+                'image_url' => 'https://i.ibb.co/0J0WzmJ/A4114-AX-24-WN-BK81-03-02.jpg'
+            ],
+            [
+                'category' => 'men-clothing',
+                'image_url' => 'https://i.ibb.co/Bc7vwXK/A2756-AX-24-WN-BK81-01-02.jpg'
+            ],
+            [
+                'category' => 'men-shoes',
+                'image_url' => 'https://i.ibb.co/LJmGjS3/C8780-AX-NS-BE55-02-01.jpg'
+            ],
+            [
+                'category' => 'men-bags',
+                'image_url' => 'https://i.ibb.co/XSG8YrS/E0691-AX-NS-BK27-01-01.jpg'
+            ],
+            [
+                'category' => 'women-clothing',
+                'image_url' => 'https://i.ibb.co/YpTHRMW/E2289-AX-24-WN-BR93-01-01.jpg'
+            ],
+            [
+                'category' => 'women-clothing',
+                'image_url' => 'https://i.ibb.co/vYLwpyT/C6402-AX-24-AU-RD54-05-01.jpg'
+            ],
+            [
+                'category' => 'women-clothing',
+                'image_url' => 'https://i.ibb.co/FJM1pTz/D1096-AX-24-CW-ER103-01-02.jpg'
+            ],
+            [
+                'category' => 'women-shoes',
+                'image_url' => 'https://i.ibb.co/cyVL9ZQ/D0356-A8-NS-BG123-02-01.jpg'
+            ],
+            [
+                'category' => 'women-bags',
+                'image_url' => 'https://i.ibb.co/4T9WYPh/D3149-AX-NS-BK27-01-01-1.jpg'
+            ],
+            [
+                'category' => 'kids-clothing',
+                'image_url' => 'https://i.ibb.co/TTW4c81/T7468-A6-24-AU-BK81-07-01.jpg'
+            ],
+            [
+                'category' => 'kids-clothing',
+                'image_url' => 'https://i.ibb.co/BcwQDpn/D8092-A8-24-WN-ER83-01-01.jpg'
+            ],
+            [
+                'category' => 'kids-pajamas',
+                'image_url' => 'https://i.ibb.co/BtFZDpw/D5513-A8-24-WN-WT34-01-01.jpg'
+            ],
+            [
+                'category' => 'kids-pajamas',
+                'image_url' => 'https://i.ibb.co/zXjvkYH/D8599-A8-24-CW-GR400-01-01-1.jpg'
+            ],
+            [
+                'category' => 'kids-shoes',
+                'image_url' => 'https://i.ibb.co/rHmzpMW/B8747-A8-NS-PN4-02-01.jpg'
+            ],
+            [
+                'category' => 'kids-shoes',
+                'image_url' => 'https://i.ibb.co/k3kTm5X/C8018-A8-NS-BK23-02-01.jpg'
+            ],
+        ];
+        
+
         foreach ($brands as $brand) {
             foreach ($categories as $category) {
                 for ($i = 1; $i <= 5; $i++) {
+                    $filtered_urls = array_filter($image_urls, function ($image_url) use ($category) {
+                        return $image_url['category'] === $category->slug;
+                    });
+        
+                    $random_url = $filtered_urls ? $filtered_urls[array_rand($filtered_urls)] : null;
+        
                     $product = Product::create([
                         'name' => $brand->name . ' ' . $category->name . ' ' . $i,
                         'description' => 'This is a sample product description for ' . $brand->name . ' ' . $category->name . ' ' . $i,
+                        'image_url' => $random_url ? $random_url['image_url'] : null,
                         'price' => rand(10, 100),
                         'brand_id' => $brand->id,
                         'is_active' => true,
                         'best_seller' => mt_rand(1, 100) <= 25,
                     ]);
-
+        
                     $product->categories()->attach($category->id);
-
+        
                     $this->createProductVariants($product, $category, $colors, $materials);
                 }
             }
         }
     }
+        
 
     private function createProductVariants($product, $category, $colors, $materials)
     {
@@ -291,21 +382,6 @@ class DatabaseSeeder extends Seeder
             return 'bags';
         } else {
             return 'clothing';
-        }
-    }
-
-    private function createCategory(array $data, $parentId = null)
-    {
-        $category = Category::create([
-            'name' => $data['name'],
-            'slug' => $data['slug'],
-            'parent_id' => $parentId,
-        ]);
-
-        if (isset($data['children']) && is_array($data['children'])) {
-            foreach ($data['children'] as $child) {
-                $this->createCategory($child, $category->id);
-            }
         }
     }
 
@@ -496,26 +572,26 @@ class DatabaseSeeder extends Seeder
                 'value' => 10.00,
                 'start_date' => now(),
                 'end_date' => now()->addDays(30),
-                'used_count' => 0,
                 'is_active' => true,
+                'image_url' => 'https://i.ibb.co/c6Skbmc/5406758.jpg'
             ],
             [
                 'name' => 'Black Friday',
                 'type' => 'percentage',
-                'value' => 50.00,
+                'value' => 30.00,
                 'start_date' => now(),
                 'end_date' => now()->addDays(10),
-                'used_count' => 0,
                 'is_active' => true,
+                'image_url' => 'https://i.ibb.co/xLxhvrM/18393162-5991789.jpg'
             ],
             [
-                'name' => 'Winter Clearance',
+                'name' => 'Winter Sale',
                 'type' => 'percentage',
-                'value' => 10.00,
+                'value' => 45.00,
                 'start_date' => now(),
                 'end_date' => now()->addDays(60),
-                'used_count' => 0,
                 'is_active' => true,
+                'image_url' => 'https://i.ibb.co/P1g1Ln5/preview-fashion-winter-sales-men-banner-template-free-design-1609939353.jpg'
             ],
         ];
 
@@ -550,6 +626,48 @@ class DatabaseSeeder extends Seeder
                     }
                 }
             }
+        }
+    }
+
+    public function createActions()
+    {
+        $actions = [
+            [
+                'name' => 'Category Manipulation'
+            ],
+            [
+                'name' => 'Campaign Manipulation'
+            ],
+            [
+                'name' => 'Coupon Manipulation'
+            ],
+            [
+                'name' => 'Product Manipulation'
+            ],
+            [
+                'name' => 'Notification Service'
+            ],
+        ];
+        
+        foreach($actions as $action){
+            Action::create($action);
+        }
+
+        $mappings = [
+            ['role_id' => 1, 'action_id' => 1],
+            ['role_id' => 1, 'action_id' => 2],
+            ['role_id' => 1, 'action_id' => 3],
+            ['role_id' => 1, 'action_id' => 4],
+            ['role_id' => 1, 'action_id' => 5],
+            ['role_id' => 2, 'action_id' => 4],
+            ['role_id' => 4, 'action_id' => 5],
+        ];
+        
+        foreach($mappings as $map){
+            \DB::table('action_role')->insert([
+                'role_id' => $map['role_id'],
+                'action_id' => $map['action_id'],
+            ]);
         }
     }
 }

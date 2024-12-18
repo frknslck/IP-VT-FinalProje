@@ -7,6 +7,7 @@ use App\Models\ProductVariant;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\Material;
+use App\Models\Notification;
 use App\Models\Category;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
@@ -18,13 +19,11 @@ class ProductController extends Controller
     {
         $categories = Category::whereNull('parent_id')->get();
         $campaigns = Campaign::where('is_active', true)->get();
-
         $products = Product::where('best_seller', true)
         ->with(['campaigns' => function($query) {
             $query->where('is_active', true);
         }])
         ->paginate(12);
-
 
         return view('homepage', compact('categories', 'products', 'campaigns'));
     }
@@ -153,42 +152,49 @@ class ProductController extends Controller
         if ($id) {
             $product = Product::find($id);
             if ($product) {
-                // flash()->success('');
                 return redirect()->route('products.show', ['product' => $product]);
             }
         }
-        // flash()->error('Product not found.');
         return redirect()->back()->with('error', 'Product not found');
-    }
-
-    public function create()
-    {
-        //
     }
 
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+            'image_url' => 'required|url|max:255',
+            'price' => 'required|numeric|min:0',
+            'brand_id' => 'required|exists:brands,id',
+            'is_active' => 'required|boolean', 
+            'best_seller' => 'required|boolean'
+        ]);
+        
+        Product::create($validatedData);
+
+        return back()->with('success', 'Product added successfully');
     }
 
-    public function edit(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Product $product)
     {
-        //
-    }
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+            'image_url' => 'required|url|max:255',
+            'price' => 'required|numeric|min:0',
+            'brand_id' => 'required|exists:brands,id',
+            'is_active' => 'required|boolean', 
+            'best_seller' => 'required|boolean'
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
+        $product->update($validatedData);
+        // dd($product);
+        return back()->with('success', 'Product updated successfully');
+    }
+    
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return back()->with('success', 'Product deleted successfully');
     }
 }

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->decimal('value', 10, 2);
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->integer('used_count')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
 

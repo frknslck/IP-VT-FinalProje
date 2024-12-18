@@ -22,12 +22,12 @@
             <div class="d-flex flex-column">
                 @if($product->discounted_price < $product->price)
                     <div class="d-flex align-items-baseline">
-                        <span class="text-muted text-decoration-line-through me-2">
-                            ${{ number_format($product->price, 2) }}
-                        </span>
-                        <span class="fw-bold text-danger">
+                        <span class="fw-bold text-danger me-2">
                             ${{ number_format($product->discounted_price, 2) }}
                         </span>
+                        <small class="text-muted text-decoration-line-through">
+                            ${{ number_format($product->price, 2) }}
+                        </small>
                     </div>
                 @else
                     <span class="fw-bold">

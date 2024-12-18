@@ -102,6 +102,8 @@ class ShoppingCartController extends Controller
         if($coupon->usage_limit != null){
             if ($coupon->used_count >= $coupon->usage_limit) {
                 return back()->with('error', 'This coupon has reached its maximum usage limit.');
+            }else if($coupon->is_active == 0 || $coupon->is_active == false){
+                return back()->with('error', 'This coupon is not active anymore.');
             }
         }
     

@@ -13,8 +13,8 @@ class Campaign extends Model
         'value',
         'start_date',
         'end_date',
-        'used_count',
         'is_active',
+        'image_url'
     ];
 
     protected $casts = [

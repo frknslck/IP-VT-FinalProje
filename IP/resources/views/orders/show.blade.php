@@ -6,7 +6,6 @@
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Order Information</h5>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Order Number:</span>
@@ -22,10 +21,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Used Coupon:</span>
-                    <span>{{ $usedCoupon ? (($usedCoupon->type == 'fixed' 
-                                ? $usedCoupon->code.' -> $'.$usedCoupon->value
-                                : $usedCoupon->code.' -> %'.$usedCoupon->value).' Discount')
-                            : 'No coupon was used for this order.'}}</span>
+                    <span>{{ $order->used_coupon ?? 'No coupon was used for this order.' }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Payment Method</span>
@@ -72,8 +68,8 @@
                             {{ $detail->productVariant->material->name ?? 'N/A' }}
                         </td>
                         <td>{{ $detail->quantity }}</td>
+                        <td>${{ number_format($detail->price / $detail->quantity , 2) }}</td>
                         <td>${{ number_format($detail->price, 2) }}</td>
-                        <td>${{ number_format($detail->quantity * $detail->price, 2) }}</td>
                     </tr>
                     @endforeach
                 </tbody>

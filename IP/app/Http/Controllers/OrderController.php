@@ -28,6 +28,8 @@ class OrderController extends Controller
                 if ($coupon) {
                     if ($coupon->used_count >= $coupon->usage_limit) {
                         return back()->with('error', 'This coupon has reached its maximum usage limit.');
+                    }else if($coupon->is_active == 0 || $coupon->is_active == false){
+                        return back()->with('error', 'This coupon is not active anymore.');
                     }
                     $coupon->used_count++;
                     $coupon->save();
@@ -38,7 +40,12 @@ class OrderController extends Controller
                 'user_id' => auth()->id(),
                 'payment_method_id' => $request->payment_method_id,
                 'address_id' => $request->address_id,
-                'coupon_id' => $cart->coupon_id,
+                'used_coupon' => $coupon 
+                ? 
+                    $coupon->type == 'fixed' 
+                    ? "{$coupon->code} -> {$coupon->value}$" 
+                    : "{$coupon->code} -> {$coupon->value}%"
+                : null,
                 'order_number' => 'ORDER-'.auth()->id().'-'.uniqid().'-'.time(),
                 'total_amount' => $cart->total,
                 'status' => 'pending',
@@ -85,8 +92,7 @@ class OrderController extends Controller
         
         $deliveryAddress = auth()->user()->addresses()->find($order->address_id);
         $paymentMethod = PaymentMethod::find($order->payment_method_id);
-        $usedCoupon = Coupon::find($order->coupon_id);
 
-        return view('orders.show', compact('order', 'deliveryAddress', 'paymentMethod', 'usedCoupon'));
+        return view('orders.show', compact('order', 'deliveryAddress', 'paymentMethod'));
     }
 }

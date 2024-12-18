@@ -33,8 +33,8 @@
                                 </td>
                                 <td>
                                     @if($item->productVariant->getEffectivePrice() < $item->productVariant->price)
-                                        <span class="text-muted text-decoration-line-through">${{ number_format($item->productVariant->price, 2) }}</span>
                                         <span class="text-danger">${{ number_format($item->productVariant->getEffectivePrice(), 2) }}</span>
+                                        <small class="text-muted text-decoration-line-through">${{ number_format($item->productVariant->price, 2) }}</small>
                                     @else
                                         ${{ number_format($item->productVariant->getEffectivePrice(), 2) }}
                                     @endif

@@ -3,8 +3,8 @@
 @section('content')
 <div class="container my-5">
     <div class="row mb-5">
-        <div class="col-md-6">
-            <img src="{{ $product->image_url ?? 'https://via.placeholder.com/400x400' }}" alt="{{ $product->name }}" class="img-fluid rounded shadow-sm">
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <img src="{{ $product->image_url ?? 'https://via.placeholder.com/400x400' }}" alt="{{ $product->name }}" class="img-fluid rounded shadow-sm w-75">
         </div>
         <div class="col-md-6">
             <h1 class="mb-3">{{ $product->name }}</h1>
@@ -198,7 +198,6 @@
         @endforeach
     </div>
 </div>
-@endsection
 
 <style>
     .rating {
@@ -268,3 +267,4 @@
     });
 </script>
 
+@endsection

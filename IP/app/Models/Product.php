@@ -13,6 +13,7 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'image_url',
         'brand_id',
         'is_active',
         'best_seller'

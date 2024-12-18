@@ -2,23 +2,23 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Shop</h1>
+    <h1 class="text-center mb-5">Shop</h1>
     <div class="row">
         <div class="col-md-3">
             <h3 class="mb-3">Filters</h3>
             <form action="{{ route('shop.index') }}" method="GET" id="filter-form">
 
-            <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
-                <select name="category" id="category" class="form-select">
-                    <option value="">All Categories</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                            {{ $category->getFormattedName() }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->getFormattedName() }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
                 <div class="mb-3">
                     <label for="color" class="form-label">Color</label>
@@ -103,7 +103,6 @@
         </div>
     </div>
 </div>
-@endsection
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -138,3 +137,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+@endsection

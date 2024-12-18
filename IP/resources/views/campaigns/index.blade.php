@@ -36,9 +36,7 @@
         @endif
     @endforeach
 </div>
-@endsection
 
-@push('styles')
 <style>
     .campaign-row {
         transition: all 0.3s ease-in-out;
@@ -53,4 +51,5 @@
         transform: scale(1.05);
     }
 </style>
-@endpush
+
+@endsection

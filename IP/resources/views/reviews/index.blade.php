@@ -1,9 +1,10 @@
 @extends('layout')
 
 @section('content')
-<div class="container my-5">
+<div class="container ">
     <h1 class="text-center mb-5">My Reviews</h1>
 
+    @if($ordersWithDetails->count() > 0)
     @foreach ($ordersWithDetails as $order)
     <div class="card shadow-sm mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -24,16 +25,19 @@
                             <h6 class="mb-0">{{ $detail->productVariant->product->name ?? 'Product Name N/A' }}</h6>
                             <small class="text-muted">Quantity: {{ $detail->quantity }}</small>
                         </div>
-                        <button 
-                            class="btn btn-outline-primary btn-sm" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#reviewModal" 
-                            data-product-id="{{ $detail->productVariant->product->id }}" 
-                            data-product-name="{{ $detail->productVariant->product->name }}"
-                            data-review-rating="{{ $detail->productVariant->product->reviews->first()->rating ?? '' }}"
-                            data-review-comment="{{ $detail->productVariant->product->reviews->first()->comment ?? '' }}">
-                            {{ $detail->productVariant->product->reviews->first() ? 'Edit Review' : 'Leave Review' }}
-                        </button>
+                        <div class="d-flex gap-2 ms-auto">
+                            <button 
+                                class="btn btn-outline-primary btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#reviewModal" 
+                                data-product-id="{{ $detail->productVariant->product->id }}" 
+                                data-product-name="{{ $detail->productVariant->product->name }}"
+                                data-review-rating="{{ $detail->productVariant->product->reviews->first()->rating ?? '' }}"
+                                data-review-comment="{{ $detail->productVariant->product->reviews->first()->comment ?? '' }}">
+                                {{ $detail->productVariant->product->reviews->first() ? 'Edit Review' : 'Leave Review' }}
+                            </button>
+                            <a class="btn btn-outline-primary btn-sm" href="/product/{{ $detail->productVariant->product->id }}">Ürüne Git</a>
+                        </div>
                     </li>
                     @endforeach
                 </ul>
@@ -41,7 +45,11 @@
         </div>
     </div>
     @endforeach
+    @else
+    <p class="text-center">You have no orders to review yet.</p>
+    @endif
 </div>
+
 
 <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -80,8 +88,6 @@
         </div>
     </div>
 </div>
-
-@endsection
 
 <style>
     .rating {
@@ -134,3 +140,4 @@
     }
 });
 </script>
+@endsection

@@ -4,12 +4,14 @@
 <div class="container mt-5">
     <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            @foreach($campaigns as $index => $campaign)
+            @forelse($campaigns as $index => $campaign)
                 <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}" class="{{ $loop->first ? 'active' : '' }}"></button>
-            @endforeach
+            @empty
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
+            @endforelse
         </div>
         <div class="carousel-inner">
-            @foreach($campaigns as $index => $campaign)
+            @forelse($campaigns as $index => $campaign)
                 <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                     <img src="{{ $campaign->image_url ?? 'https://via.placeholder.com/1200x420' }}" class="d-block w-100" alt="{{ $campaign->name }}">
                     <div class="carousel-caption d-none d-md-block">
@@ -23,7 +25,15 @@
                         </p>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="carousel-item active">
+                    <img src="https://via.placeholder.com/1200x420" class="d-block w-100" alt="No Campaigns">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2>No Campaigns Available</h2>
+                        <p>Check back later for amazing offers!</p>
+                    </div>
+                </div>
+            @endforelse
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -32,6 +42,7 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
         </button>
     </div>
+
     <hr>
     <div class="row text-center mb-5">
         <h1 class="mb-4">Categories</h1>

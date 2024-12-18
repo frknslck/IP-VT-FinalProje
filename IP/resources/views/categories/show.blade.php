@@ -10,7 +10,7 @@
             @foreach($subcategories as $subcategory)
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-lg border-0 h-100">
-                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ $subcategory->name }}">
+                        <img src="{{ $category->image_url ?? 'https://via.placeholder.com/300x200?text=' . urlencode($category->name) }}" class="card-img-top" alt="{{ $subcategory->name }}">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ $subcategory->name }}</h5>
                             <p class="card-text text-muted mb-4">Explore products under {{ $subcategory->name }} category.</p>

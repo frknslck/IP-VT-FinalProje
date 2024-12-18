@@ -38,13 +38,12 @@
         {{ $products->links() }}
     </div>
 </div>
-@endsection
 
-@push('styles')
 <style>
     .card-img-top {
         height: 200px;
         object-fit: cover;
     }
 </style>
-@endpush
+
+@endsection

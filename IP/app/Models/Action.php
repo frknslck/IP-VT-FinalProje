@@ -8,7 +8,7 @@ class Action extends Model
 {
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'action_role');
+        return $this->belongsToMany(Role::class, 'action_role')->withTimestamps();;
     }
 
 }
