@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
@@ -103,6 +104,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
 });
 
+// Blogs
+
+Route::resource('blogs', BlogController::class);
+
 // Request & Complaints
 
 Route::middleware(['auth'])->group(function () {
@@ -156,6 +161,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/actions/review-rc/{id}', [RequestComplaintController::class, 'review'])->name('action-panel.review-requests-complaints');
     Route::get('/actions/resolve-rc/{id}', [RequestComplaintController::class, 'resolve'])->name('action-panel.resolve-requests-complaints');
+
+    // Blog Management
+
+    Route::post('/actions/blogs', [BlogController::class, 'update'])->name('action-panel.update-blog');
+    Route::delete('/actions/blogs/{blog}', [BlogController::class, 'destroy'])->name('action-panel.destroy-blog');
 
 });
 

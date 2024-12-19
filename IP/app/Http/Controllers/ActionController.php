@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\Brand;
@@ -60,6 +61,13 @@ class ActionController extends Controller
                 case 8;
                     $rcs = RequestComplaint::whereIn('status', ['Pending', 'Reviewed'])->get();
                     $viewData = view('action-panel.partials.request-complaints', compact('rcs'))->render();
+                    break;
+                case 9:
+                    $user = auth()->user();
+                    $blogs = $user->hasRole('Admin') 
+                        ? Blog::with('user')->get()
+                        : Blog::where('user_id', $user->id)->get();
+                    $viewData = view('action-panel.partials.blog', compact('blogs', 'user'))->render();
                     break;
             }
         }
