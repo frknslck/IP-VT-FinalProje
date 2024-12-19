@@ -80,6 +80,7 @@
                         <th>Description</th>
                         <th>Price</th>
                         <th>Brand</th>
+                        <th>Category</th>
                         <th>Active Status</th>
                         <th>Best Seller</th>
                         <th>Created At</th>
@@ -95,6 +96,7 @@
                             <td>{{ $product->description }}</td>
                             <td>${{ number_format($product->price, 2) }}</td>
                             <td>{{ $product->brand->name ?? 'No Brand' }}</td>
+                            <td>{{ $product->categories->first()->name ?? 'No Brand' }}</td>
                             <td>
                                 <span class="badge {{ $product->is_active ? 'bg-success' : 'bg-danger' }}">
                                     {{ $product->is_active ? 'Active' : 'Inactive' }}
