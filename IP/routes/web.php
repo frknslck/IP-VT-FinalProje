@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RequestComplaintController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShoppingCartController;
+use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActionController;
 use App\Http\Controllers\WishlistController;
@@ -133,14 +134,19 @@ Route::middleware(['auth'])->group(function () {
     // Product Management
     Route::post('/actions/product', [ProductController::class, 'store'])->name('action-panel.store-product');
     Route::put('/actions/product/{product}', [ProductController::class, 'update'])->name('action-panel.update-product');
-    Route::delete('/actions/product/{product}', [ProductController::class, 'delete'])->name('action-panel.delete-product');
+    Route::delete('/actions/product/{product}', [ProductController::class, 'destroy'])->name('action-panel.destroy-product');
 
     // Order Management
 
     Route::post('/actions/orders/{id}/status-action', [OrderController::class, 'finalizeOrderStatus'])->name('action-panel.finalize-order');
-Route::post('/actions/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('action-panel.update-order');
+    Route::post('/actions/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('action-panel.update-order');
 
+    // Supplier Management
 
+    Route::post('/actions/supply', [SupplyController::class, 'store'])->name('action-panel.store-supplier');
+    Route::post('/supply/suggested-cost', [SupplyController::class, 'getSuggestedCost'])->name('action-panel.get-suggested-cost');
+
+    Route::get('/actions/supply/products/{id}/', [ProductController::class, 'fetchProductsForSupplyManagement'])->name('action-panel.fetch-products-for-supplier');
 
     // Notification Service
 

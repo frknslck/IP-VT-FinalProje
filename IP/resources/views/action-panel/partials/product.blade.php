@@ -39,6 +39,17 @@
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
+                    <label for="categories" class="form-label">Categories</label>
+                    <select class="form-select @error('categories') is-invalid @enderror" 
+                            id="categories" name="categories[]" multiple>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ collect(old('categories'))->contains($category->id) ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
                     <label for="is_active" class="form-label">Active Status</label>
                     <select class="form-select @error('is_active') is-invalid @enderror" 
                             id="is_active" name="is_active" required>
@@ -102,7 +113,7 @@
                                             data-bs-toggle="modal" data-bs-target="#editModal{{ $product->id }}">
                                         <i class="bi bi-pencil"></i> Edit
                                     </button>
-                                    <form action="{{ route('action-panel.delete-product', $product) }}" 
+                                    <form action="{{ route('action-panel.destroy-product', $product) }}" 
                                           method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -162,6 +173,18 @@
                                                         <option value="{{ $brand->id }}" 
                                                                 {{ $product->brand_id == $brand->id ? 'selected' : '' }}>
                                                             {{ $brand->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="edit_categories{{ $product->id }}" class="form-label">Categories</label>
+                                                <select id="edit_categories{{ $product->id }}" name="categories[]" 
+                                                        class="form-select" multiple>
+                                                    @foreach($categories as $category)
+                                                        <option value="{{ $category->id }}" 
+                                                                {{ $product->categories->contains($category->id) ? 'selected' : '' }}>
+                                                            {{ $category->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>

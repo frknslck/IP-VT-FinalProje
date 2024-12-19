@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Models\Campaign;
@@ -20,7 +21,7 @@ class ActionController extends Controller
         $actions = $user->roles->flatMap->actions->unique('id');
         $selectedActionId = $request->input('action_id');
         $viewData = null;
-        $orders = Order::select('id', 'total_amount', 'created_at')->get()->toJson();
+        $chart = Order::select('id', 'total_amount', 'created_at')->where('status', 'completed')->get()->toJson();
 
         if ($selectedActionId) {
             switch ($selectedActionId) {
@@ -37,9 +38,10 @@ class ActionController extends Controller
                     $viewData = view('action-panel.partials.coupon', compact('coupons'))->render();
                     break;
                 case 4:
-                    $products = Product::all();
+                    $products = Product::with('categories', 'brand')->get();
                     $brands = Brand::all();
-                    $viewData = view('action-panel.partials.product', compact('products', 'brands'))->render();
+                    $categories = Category::where('parent_id', '!=', null)->get();
+                    $viewData = view('action-panel.partials.product', compact('products', 'brands', 'categories'))->render();
                     break;
                 case 5:
                     $orders = Order::whereIn('status', ['pending', 'processing'])
@@ -48,16 +50,20 @@ class ActionController extends Controller
                     $viewData = view('action-panel.partials.order', compact('orders'))->render();
                     break;
                 case 6:
+                    $suppliers = Supplier::all();
+                    $viewData = view('action-panel.partials.supply', compact('suppliers'))->render();
+                    break;
+                case 7:
                     $users = User::all();
                     $viewData = view('action-panel.partials.notification', compact('users'))->render();
                     break;
-                case 7;
+                case 8;
                     $rcs = RequestComplaint::whereIn('status', ['Pending', 'Reviewed'])->get();
                     $viewData = view('action-panel.partials.request-complaints', compact('rcs'))->render();
                     break;
             }
         }
 
-        return view('action-panel.index', compact('user', 'actions', 'selectedActionId', 'viewData', 'orders'));
+        return view('action-panel.index', compact('user', 'actions', 'selectedActionId', 'viewData', 'chart'));
     }
 }

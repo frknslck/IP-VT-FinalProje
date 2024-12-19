@@ -692,6 +692,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Order Management'
             ],
             [
+                'name' => 'Supply Management'
+            ],
+            [
                 'name' => 'Notification Service'
             ],
             [
@@ -711,6 +714,7 @@ class DatabaseSeeder extends Seeder
             ['role_id' => 1, 'action_id' => 5],
             ['role_id' => 1, 'action_id' => 6],
             ['role_id' => 1, 'action_id' => 7],
+            ['role_id' => 1, 'action_id' => 8],
             ['role_id' => 2, 'action_id' => 4],
             ['role_id' => 4, 'action_id' => 5],
         ];

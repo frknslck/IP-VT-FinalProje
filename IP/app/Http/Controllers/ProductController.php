@@ -167,14 +167,17 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'brand_id' => 'required|exists:brands,id',
             'is_active' => 'required|boolean', 
-            'best_seller' => 'required|boolean'
+            'best_seller' => 'required|boolean',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id'
         ]);
-        
-        Product::create($validatedData);
-
+    
+        $product = Product::create($validatedData);
+        $product->categories()->attach($validatedData['categories']);
+    
         return back()->with('success', 'Product added successfully');
     }
-
+    
     public function update(Request $request, Product $product)
     {
         $validatedData = $request->validate([
@@ -184,17 +187,37 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'brand_id' => 'required|exists:brands,id',
             'is_active' => 'required|boolean', 
-            'best_seller' => 'required|boolean'
+            'best_seller' => 'required|boolean',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id'
         ]);
-
+    
         $product->update($validatedData);
-        // dd($product);
+        $product->categories()->sync($validatedData['categories']);
+    
         return back()->with('success', 'Product updated successfully');
     }
+    
     
     public function destroy(Product $product)
     {
         $product->delete();
         return back()->with('success', 'Product deleted successfully');
     }
+
+    public function fetchProductsForSupplyManagement($id)
+    {
+        $product = Product::with('variants.stock')->findOrFail($id);
+        return response()->json([
+            'variants' => $product->variants->map(function ($variant) {
+                return [
+                    'id' => $variant->id,
+                    'name' => $variant->name,
+                    'sku' => $variant->sku,
+                    'stock' => $variant->stock->quantity ?? 0,
+                ];
+            })
+        ]);
+    }
+
 }
