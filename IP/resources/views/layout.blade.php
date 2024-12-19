@@ -26,6 +26,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('blogs.index') }}"><i class="fa-solid fa-blog"></i> Blogs</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('campaigns.index') }}"><i class="fas fa-bullhorn"></i> Campaigns</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle"></i> My Account

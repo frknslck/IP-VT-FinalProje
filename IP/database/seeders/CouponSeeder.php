@@ -44,7 +44,7 @@ class CouponSeeder extends Seeder
 
         foreach ($coupons as $coupon) {
             $coupon = Coupon::create($coupon);
-            $coupon->users()->attach([1, 2, 3]);
+            $coupon->users()->attach([1]);
         }
     }
 }
