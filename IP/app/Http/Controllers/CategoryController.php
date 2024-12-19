@@ -3,25 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
     public function index()
     {
         $categories = Category::whereNull('parent_id')->with('children')->get();
+
         return view('categories.index', compact('categories'));
     }
 
     public function show(Category $category)
     {
         $subcategories = $category->children;
-        if($category->parent_id === null){
-            $products = $category->getAllProducts()->with(['campaigns' => function($query) {
+
+        if ($category->parent_id === null) {
+            $products = $category->getAllProducts()->with(['campaigns' => function ($query) {
                 $query->where('is_active', true);
             }])->paginate(12);
-        }else{
-            $products = $category->products()->with(['campaigns' => function($query) {
+        } else {
+            $products = $category->products()->with(['campaigns' => function ($query) {
                 $query->where('is_active', true);
             }])->paginate(12);
         }
@@ -37,14 +41,22 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id'
         ]);
 
-        Category::create($validatedData);
+        $category = Category::create($validatedData);
 
-        return back()->with('success', 'Kategori başarıyla eklendi.');
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'target' => 'category',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Category created. ID: ' . $category->id,
+        ]);
+
+        return back()->with('success', 'Category added successfully.');
     }
 
     public function update(Request $request, Category $category)
     {
-        // dd($request);
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'slug' => 'required|max:255',
@@ -52,23 +64,70 @@ class CategoryController extends Controller
         ]);
 
         if ($validatedData['parent_id'] && ($validatedData['parent_id'] == $category->id || $this->isChildCategory($category->id, $validatedData['parent_id']))) {
-            return back()->with('error', 'Bir kategori kendisini veya alt kategorisini üst kategori olarak seçemez.');
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'update',
+                'target' => 'category',
+                'status' => 'failed',
+                'ip_address' => request()->ip(),
+                'details' => 'Failed to update category. Invalid parent ID. ID: ' . $category->id,
+            ]);
+
+            return back()->with('error', 'A category cannot select itself or its subcategory as its parent category.');
         }
 
         $category->update($validatedData);
-        return back()->with('success', 'Kategori başarıyla güncellendi.');
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'update',
+            'target' => 'category',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Category updated. ID: ' . $category->id,
+        ]);
+
+        return back()->with('success', 'Category updated successfully.');
     }
 
     public function delete(Category $category)
     {
         if ($category->products()->exists()) {
-            return back()->with('error', 'Bu kategori ürünler içeriyor. Kategoriyi silmeden önce lütfen ilişkili ürünleri kaldırın veya başka bir kategoriye taşıyın.');
-        }else if($category->parent_id == null && $category->children()->exists()){
-            return back()->with('error', 'Bu kategori alt kategoriler içeriyor. Kategoriyi silmeden önce lütfen ilişkili kategorileri kaldırın veya başka bir ana kategoriye taşıyın.');
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete',
+                'target' => 'category',
+                'status' => 'failed',
+                'ip_address' => request()->ip(),
+                'details' => 'Failed to delete category. Has associated products. ID: ' . $category->id,
+            ]);
+
+            return back()->with('error', 'This category contains products. Please remove or move the associated products to another category before deleting it.');
+        } else if ($category->parent_id == null && $category->children()->exists()) {
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete',
+                'target' => 'category',
+                'status' => 'failed',
+                'ip_address' => request()->ip(),
+                'details' => 'Failed to delete category. Has child categories. ID: ' . $category->id,
+            ]);
+
+            return back()->with('error', 'This category contains subcategories. Please remove or move the associated subcategories to another parent category before deleting it.');
         }
 
         $category->delete();
-        return back()->with('success', 'Kategori başarıyla silindi.');
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'target' => 'category',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Category deleted. ID: ' . $category->id,
+        ]);
+
+        return back()->with('success', 'Category deleted successfully.');
     }
 
     private function isChildCategory($parentId, $categoryId)

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Address;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\ActionLog;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -30,6 +31,15 @@ class UserController extends Controller
 
         $user->update($validatedData);
 
+        ActionLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update',
+            'target' => 'user profile',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'User profile updated: ID ' . $user->id,
+        ]);
+
         return back()->with('success', 'Profile updated successfully.');
     }
 
@@ -44,6 +54,15 @@ class UserController extends Controller
         ]);
 
         Auth::user()->addresses()->create($validatedData);
+
+        ActionLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'create',
+            'target' => 'address',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Address added for user ID ' . auth()->id(),
+        ]);
 
         return back()->with('success', 'Address added successfully.');
     }
@@ -60,12 +79,30 @@ class UserController extends Controller
 
         $address->update($validatedData);
 
+        ActionLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update',
+            'target' => 'address',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Address updated for user ID ' . auth()->id(),
+        ]);
+
         return back()->with('success', 'Address updated successfully.');
     }
 
     public function deleteAddress(Address $address)
     {
         $address->delete();
+
+        ActionLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'delete',
+            'target' => 'address',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Address deleted for user ID ' . auth()->id(),
+        ]);
 
         return back()->with('success', 'Address deleted successfully.');
     }
@@ -85,6 +122,16 @@ class UserController extends Controller
 
         if (!$user->hasRole($role->name)) {
             $user->roles()->attach($role);
+
+            ActionLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'create',
+                'target' => 'role',
+                'status' => 'success',
+                'ip_address' => request()->ip(),
+                'details' => 'Role ' . $role->name . ' added to user ID ' . $user->id,
+            ]);
+
             return back()->with('success', 'Role added successfully.');
         }
 
@@ -93,32 +140,36 @@ class UserController extends Controller
 
     public function removeRole(Request $request)
     {
-        // dd($request);
         $user = Auth::user();
 
-        // Admin yetkisi kontrolü
         if (!$user->isAdmin()) {
             return back()->with('error', 'You do not have permission to manage roles.');
         }
 
-        // Gelen verilerin doğrulaması
         $validatedData = $request->validate([
             'role_id' => 'required|exists:roles,id',
             'user_id' => 'required|exists:users,id',
         ]);
 
-
         $role = Role::findOrFail($validatedData['role_id']);
         $targetUser = User::findOrFail($validatedData['user_id']);
 
-        // Kendi admin rolünü silmeye çalışma durumu
         if ($role->name === 'Admin' && $user->id === $targetUser->id) {
             return back()->with('error', 'You cannot remove your own admin role.');
         }
 
-        // Kullanıcının bu role sahip olup olmadığını kontrol et
         if ($targetUser->roles->contains($role)) {
-            $targetUser->roles()->detach($role); // Rolü kaldır
+            $targetUser->roles()->detach($role);
+
+            ActionLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'delete',
+                'target' => 'role',
+                'status' => 'success',
+                'ip_address' => request()->ip(),
+                'details' => 'Role ' . $role->name . ' removed from user ID ' . $targetUser->id,
+            ]);
+
             return back()->with('success', 'Role removed successfully.');
         }
 

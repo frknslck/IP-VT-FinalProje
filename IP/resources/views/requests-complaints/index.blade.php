@@ -2,15 +2,10 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-center mb-5">My Requests and Complaints</h1>
-
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <a href="{{ route('requests-complaints.create') }}" class="btn btn-success mb-4">New Request/Complaint</a>
+    <div class="mb-5 text-center">
+        <h1>My Requests and Complaints</h1>
+        <a href="{{ route('requests-complaints.create') }}" class="btn btn-success mb-4">New Request/Complaint</a>
+    </div>
 
     <table class="table table-bordered">
         <thead>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Notification;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -37,6 +39,15 @@ class NotificationController extends Controller
         $notification = Notification::create($request->only('from', 'title', 'message'));
 
         $notification->users()->attach($request->user_ids);
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'target' => 'notification',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Notification sent. ID: ' . $notification->id,
+        ]);
 
         return back()->with('success', 'Notification sent successfully.');
     }

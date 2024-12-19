@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <div class="mb-4 text-center">
+    <div class="mb-5 text-center">
         <h1>Blog Posts</h1>
         @if($user && ($user->hasRole('Admin') || $user->hasRole('Blogger')))
             <a href="{{ route('blogs.create') }}" class="btn btn-primary mt-3">Create New Blog</a>

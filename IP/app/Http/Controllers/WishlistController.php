@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Wishlist;
 use App\Models\Product;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,9 +34,29 @@ class WishlistController extends Controller
 
         if ($wishlistItem) {
             $wishlistItem->delete();
+
+            ActionLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'delete',
+                'target' => 'wishlist item',
+                'status' => 'success',
+                'ip_address' => request()->ip(),
+                'details' => 'Product removed from wishlist, Product ID: ' . $productId,
+            ]);
+
             return back()->with('success', 'Product removed from wishlist successfully.');
         } else {
             Wishlist::create(['user_id' => $userId, 'product_id' => $productId]);
+
+            ActionLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'create',
+                'target' => 'wishlist item',
+                'status' => 'success',
+                'ip_address' => request()->ip(),
+                'details' => 'Product added to wishlist, Product ID: ' . $productId,
+            ]);
+
             return back()->with('success', 'Product added to wishlist successfully.');
         }
     }
@@ -43,6 +64,16 @@ class WishlistController extends Controller
     public function removeFromWishlist(Wishlist $wishlistItem)
     {
         $wishlistItem->delete();
+
+        ActionLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'delete',
+            'target' => 'wishlist item',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Product removed from wishlist, Product ID: ' . $wishlistItem->product_id,
+        ]);
+
         return redirect()->route('wishlist.index')->with('success', 'Product removed from wishlist successfully.');
     }
 }

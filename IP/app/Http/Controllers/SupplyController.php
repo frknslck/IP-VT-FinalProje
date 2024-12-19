@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductVariant;
 use App\Models\Stock;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
 
 class SupplyController extends Controller
@@ -37,6 +38,15 @@ class SupplyController extends Controller
                     'quantity' => $request->quantity,
                 ]);
             }
+
+            ActionLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'create',
+                'target' => 'supply',
+                'status' => 'success',
+                'ip_address' => request()->ip(),
+                'details' => 'Supply added for Product Variant ID: ' . $variant->id . ', Supplier ID: ' . $request->supplier_id,
+            ]);
         });
 
         return back()->with('success', 'Supply added successfully.');
@@ -60,5 +70,4 @@ class SupplyController extends Controller
             'suggested_cost' => $suggestedCost,
         ]);
     }
-
 }

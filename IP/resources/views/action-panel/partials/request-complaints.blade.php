@@ -58,17 +58,6 @@
                     <p>{{ $complaint->message }}</p>
                 </div>
                 <div class="modal-footer">
-                    @if($complaint->status == 'Pending')
-                        <form action="{{ route('action-panel.review-requests-complaints', $complaint->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-info text-white">Mark as Reviewed</button>
-                        </form>
-                    @elseif($complaint->status == 'Reviewed')
-                        <form action="{{ route('action-panel.resolve-requests-complaints', $complaint->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-success">Mark as Resolved</button>
-                        </form>
-                    @endif
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

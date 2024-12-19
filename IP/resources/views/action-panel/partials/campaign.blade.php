@@ -141,6 +141,15 @@
                                                     name="image_url" value="{{ $campaign->image_url }}" required>
                                             </div>
                                             <div class="mb-3">
+                                            <label for="edit_is_active{{ $campaign->id }}" class="form-label">Active Status</label>
+                                                <select class="form-select" 
+                                                        id="edit_is_active{{ $campaign->id }}" 
+                                                        name="is_active">
+                                                    <option value="1" {{ $campaign->is_active ? 'selected' : '' }}>Active</option>
+                                                    <option value="0" {{ !$campaign->is_active ? 'selected' : '' }}>Inactive</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="edit_start_date{{ $campaign->id }}" class="form-label">Campaign Start Date</label>
                                                 <input type="datetime-local" class="form-control" 
                                                     id="edit_start_date{{ $campaign->id }}" 
@@ -151,15 +160,6 @@
                                                 <input type="datetime-local" class="form-control" 
                                                     id="edit_end_date{{ $campaign->id }}" 
                                                     name="end_date" value="{{ $campaign->end_date->format('Y-m-d\TH:i') }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                            <label for="edit_best_seller{{ $campaign->id }}" class="form-label">Best Seller</label>
-                                                <select class="form-select" 
-                                                        id="edit_best_seller{{ $campaign->id }}" 
-                                                        name="best_seller">
-                                                    <option value="1" {{ $campaign->best_seller ? 'selected' : '' }}>Yes</option>
-                                                    <option value="0" {{ !$campaign->best_seller ? 'selected' : '' }}>No</option>
-                                                </select>
                                             </div>
                                         </div>
                                         <div class="modal-footer">

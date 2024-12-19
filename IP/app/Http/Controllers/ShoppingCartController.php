@@ -7,9 +7,9 @@ use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use App\Models\ProductVariant;
 use App\Models\Coupon;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class ShoppingCartController extends Controller
 {
@@ -57,12 +57,31 @@ class ShoppingCartController extends Controller
             ]);
         }
 
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'target' => 'shopping_cart_item',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Product added to cart, Product ID: ' . $product_variant->product_id,
+        ]);
+
         return back()->with('success', 'Product added to cart successfully.');
     }
 
     public function removeFromCart(ShoppingCartItem $item)
     {
         $item->delete();
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'target' => 'shopping_cart_item',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Product removed from cart, Product Variant ID: ' . $item->product_variant_id,
+        ]);
+
         return back()->with('success', 'Product removed from cart successfully.');
     }
 
@@ -72,9 +91,9 @@ class ShoppingCartController extends Controller
             'action' => 'required|in:increase,decrease',
             'item_id' => 'required|exists:shopping_cart_items,id',
         ]);
-    
+
         $item = ShoppingCartItem::find($request->item_id);
-    
+
         if ($item && $item->shopping_cart_id === $this->getOrCreateCart()->id) {
             if ($request->action === 'increase') {
                 $item->quantity++;
@@ -82,8 +101,17 @@ class ShoppingCartController extends Controller
                 $item->quantity--;
             }
             $item->save();
+
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'update',
+                'target' => 'shopping_cart_item',
+                'status' => 'success',
+                'ip_address' => request()->ip(),
+                'details' => 'Cart quantity updated, Item ID: ' . $item->id,
+            ]);
         }
-    
+
         return back()->with('success', 'Cart quantity updated successfully.');
     }
 
@@ -92,34 +120,52 @@ class ShoppingCartController extends Controller
         $request->validate([
             'code' => 'required|string',
         ]);
-    
+
         $coupon = Coupon::where('code', $request->code)->first();
-    
+
         if (!$coupon) {
             return back()->with('error', 'Invalid coupon code.');
         }
-        
-        if($coupon->usage_limit != null){
+
+        if ($coupon->usage_limit != null) {
             if ($coupon->used_count >= $coupon->usage_limit) {
                 return back()->with('error', 'This coupon has reached its maximum usage limit.');
-            }else if($coupon->is_active == 0 || $coupon->is_active == false){
+            } elseif ($coupon->is_active == 0 || $coupon->is_active == false) {
                 return back()->with('error', 'This coupon is not active anymore.');
             }
         }
-    
+
         $cart = $this->getOrCreateCart();
-    
+
         $cart->coupon_id = $coupon->id;
         $cart->save();
-    
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'update',
+            'target' => 'shopping_cart',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Coupon applied, Coupon Code: ' . $coupon->code,
+        ]);
+
         return back()->with('success', 'Coupon applied successfully.');
     }
-    
+
     public function removeCoupon()
     {
         $cart = $this->getOrCreateCart();
         $cart->coupon_id = null;
         $cart->save();
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'update',
+            'target' => 'shopping_cart',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Coupon removed',
+        ]);
 
         return back()->with('success', 'Coupon removed successfully.');
     }

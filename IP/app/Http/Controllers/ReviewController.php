@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductReview;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -20,24 +21,32 @@ class ReviewController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'product_id' => 'required|exists:products,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ]);
-    
+
         $review = ProductReview::updateOrCreate(
             [
                 'user_id' => auth()->id(),
-                'product_id' => $request->product_id,
+                'product_id' => $validatedData['product_id'],
             ],
             [
-                'rating' => $request->rating,
-                'comment' => $request->comment ?? '',
+                'rating' => $validatedData['rating'],
+                'comment' => $validatedData['comment'] ?? '',
             ]
         );
 
+        ActionLog::create([
+            'user_id' => auth()->id(),
+            'action' => $review->wasRecentlyCreated ? 'create' : 'update',
+            'target' => 'product_review',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Review ' . ($review->wasRecentlyCreated ? 'submitted' : 'updated') . ' for product ID: ' . $review->product_id,
+        ]);
+
         return redirect()->back()->with('success', 'Your review has been ' . ($review->wasRecentlyCreated ? 'submitted' : 'updated') . ' successfully!');
     }
-
 }

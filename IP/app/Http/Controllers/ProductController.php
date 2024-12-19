@@ -10,8 +10,9 @@ use App\Models\Material;
 use App\Models\Notification;
 use App\Models\Category;
 use App\Models\Campaign;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -38,7 +39,6 @@ class ProductController extends Controller
             });
         }
 
-        // Combine color, size, and material filters
         if ($request->filled('color') || $request->filled('size') || $request->filled('material')) {
             $query->whereHas('variants', function ($variantQuery) use ($request) {
                 if ($request->filled('color')) {
@@ -107,7 +107,7 @@ class ProductController extends Controller
         $stock = $product->variants->sum(function($variant) {
             return $variant->stock ? $variant->stock->quantity : 0;
         });
-        
+
         $relatedProducts = Product::with(['campaigns' => function($query) {
             $query->where('is_active', true);
         }])->whereHas('categories', function ($query) use ($product) {
@@ -140,8 +140,8 @@ class ProductController extends Controller
         }
 
         return view('products.show', compact(
-            'product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials', 
-            'variantOptions', 'sizeNames', 'materialNames', 'reviews', 'userReview', 
+            'product', 'stock', 'relatedProducts', 'colors', 'sizes', 'materials',
+            'variantOptions', 'sizeNames', 'materialNames', 'reviews', 'userReview',
             'userPurchasedProduct'
         ));
     }
@@ -171,13 +171,22 @@ class ProductController extends Controller
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id'
         ]);
-    
+
         $product = Product::create($validatedData);
         $product->categories()->attach($validatedData['categories']);
-    
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'target' => 'product',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Product added successfully. Product ID: ' . $product->id,
+        ]);
+
         return back()->with('success', 'Product added successfully');
     }
-    
+
     public function update(Request $request, Product $product)
     {
         $validatedData = $request->validate([
@@ -191,17 +200,35 @@ class ProductController extends Controller
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id'
         ]);
-    
+
         $product->update($validatedData);
         $product->categories()->sync($validatedData['categories']);
-    
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'update',
+            'target' => 'product',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Product updated successfully. Product ID: ' . $product->id,
+        ]);
+
         return back()->with('success', 'Product updated successfully');
     }
-    
-    
+
     public function destroy(Product $product)
     {
         $product->delete();
+
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'target' => 'product',
+            'status' => 'success',
+            'ip_address' => request()->ip(),
+            'details' => 'Product deleted successfully. Product ID: ' . $product->id,
+        ]);
+
         return back()->with('success', 'Product deleted successfully');
     }
 

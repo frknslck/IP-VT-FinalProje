@@ -12,11 +12,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
+use App\Models\LoginLog;
+
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
@@ -47,7 +46,17 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // return redirect(route('dashboard', absolute: false));
+        // Log the register event
+        $user = auth()->user();
+        $ipAddress = request()->ip();
+
+        LoginLog::create([
+            'user_id' => $user->id ?? null,
+            'event' => 'register',
+            'status' => 'success',
+            'ip_address' => $ipAddress,
+        ]);
+
         return redirect(route('homepage', absolute: false))->with('success', 'Registeration was successfull');
     }
 }
