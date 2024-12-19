@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Models\Campaign;
 use App\Models\Coupon;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Models\RequestComplaint;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\User;
@@ -41,8 +42,19 @@ class ActionController extends Controller
                     $viewData = view('action-panel.partials.product', compact('products', 'brands'))->render();
                     break;
                 case 5:
+                    $orders = Order::whereIn('status', ['pending', 'processing'])
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                    $viewData = view('action-panel.partials.order', compact('orders'))->render();
+                    break;
+                case 6:
                     $users = User::all();
                     $viewData = view('action-panel.partials.notification', compact('users'))->render();
+                    break;
+                case 7;
+                    $rcs = RequestComplaint::whereIn('status', ['Pending', 'Reviewed'])->get();
+                    $viewData = view('action-panel.partials.request-complaints', compact('rcs'))->render();
+                    break;
             }
         }
 

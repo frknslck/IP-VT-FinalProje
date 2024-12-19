@@ -18,12 +18,12 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('supplied_products', function (Blueprint $table) {
+        Schema::create('supplied_product_variants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_variant_id')->constrained()->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
-            $table->decimal('cost_price', 10, 2);
-            $table->integer('minimum_order_quantity');
+            $table->decimal('cost', 10, 2);
+            $table->integer('quantity');
             $table->timestamps();
         });
     }

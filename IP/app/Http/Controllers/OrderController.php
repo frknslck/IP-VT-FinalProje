@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Address;
+use App\Models\Notification;
 use App\Models\Coupon;
 use App\Models\PaymentMethod;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -59,6 +60,15 @@ class OrderController extends Controller
                     'quantity' => $item->quantity,
                     'price' => $item->total_price,
                 ]);
+
+                $productVariant = ProductVariant::find($item->product_variant_id);
+                if ($productVariant) {
+                    $stock = $productVariant->stock;
+                    if ($stock) {
+                        $stock->quantity -= $item->quantity;
+                        $stock->save();
+                    }
+                }
             }
 
             $cart->items()->delete();
@@ -95,4 +105,62 @@ class OrderController extends Controller
 
         return view('orders.show', compact('order', 'deliveryAddress', 'paymentMethod'));
     }
+
+    public function updateOrderStatus($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->status == 'pending') {
+            $order->status = 'processing';
+            $order->save();
+            return back()->with('success', 'Order is now being processed.');
+        }
+
+        return back()->with('error', 'Invalid order status.');
+    }
+
+    public function finalizeOrderStatus(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,completed,cancelled',
+            'message' => 'nullable|string|max:255',
+        ]);
+
+        $order = Order::findOrFail($id);
+
+        $status = $validated['status'];
+        $message = $validated['message'];
+
+        
+        $order->status = $status;
+        $order->save();
+        
+        if ($status == 'cancelled') {
+            foreach ($order->details as $detail) {
+                $productVariant = ProductVariant::find($detail->product_variant_id);
+                if ($productVariant) {
+                    $stock = $productVariant->stock;
+                    if ($stock) {
+                        $stock->quantity += $detail->quantity;
+                        $stock->save();
+                    }
+                }
+            }
+        }
+
+        $notificationMessage = $status == 'completed'
+            ? 'Congratulations on your purchase! Your order ' . $order->order_number . ' has been completed. '. $message
+            : 'We are sorry to inform you that your order ' . $order->order_number . ' has been cancelled. '. $message;
+
+
+        $notification = Notification::create([
+            'from' => 'System',
+            'title' => 'Order Status of -> '.$order->order_number,
+            'message' => $notificationMessage,
+        ]);
+        $notification->users()->attach(auth()->user()->id);
+
+        return back()->with('success', 'Order status updated and notification sent.');
+    }
+
 }

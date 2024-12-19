@@ -85,11 +85,10 @@
     <footer class="bg-light border-top py-4 mt-auto">
         <div class="container">
             <div class="row">
-                <!-- Footer Links Section -->
                 <div class="col-md-4 mb-3">
                     <h5>Customer Service</h5>
                     <ul class="nav flex-column">
-                        <li class="nav-item"><a href="#" class="nav-link p-0 text-muted">Support</a></li>
+                        <li class="nav-item"><a href="{{route('requests-complaints.index')}}" class="nav-link p-0 text-muted">Support</a></li>
                         <li class="nav-item"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
                         <li class="nav-item"><a href="#" class="nav-link p-0 text-muted">Returns</a></li>
                         <li class="nav-item"><a href="#" class="nav-link p-0 text-muted">Shipping Info</a></li>

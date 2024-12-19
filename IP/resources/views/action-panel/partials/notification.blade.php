@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h2 class="mb-0">Send Notifications</h2>
+        <h2 class="mb-0">Notification Service</h2>
     </div>
     <div class="card-body">
         <form action="{{ route('action-panel.send-notification') }}" method="POST" class="mb-4">

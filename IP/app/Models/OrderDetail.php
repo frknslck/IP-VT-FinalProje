@@ -20,8 +20,8 @@ class OrderDetail extends Model
         return $this->productVariant->product();
     }
 
-    // public function orders()
-    // {
-    //     return $this->belongsTo(Order::class);
-    // }
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

@@ -29,12 +29,6 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
-    // public function getTotalStockAttribute()
-    // {
-    //     // dd($this->variants()->sum('stock'));
-    //     return $this->variants->sum('stock');
-    // }
-
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
@@ -88,4 +82,6 @@ class Product extends Model
     {
         return $this->variants->max('price');
     }
+
+
 }

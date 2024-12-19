@@ -37,6 +37,13 @@ class ProductVariant extends Model
         return $this->belongsTo(Material::class);
     }
 
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class, 'supplied_product_variants')
+                    ->withPivot('cost', 'quantity')
+                    ->withTimestamps();
+    }
+
     public function stock()
     {
         return $this->hasOne(Stock::class, 'sku', 'sku');
@@ -56,4 +63,6 @@ class ProductVariant extends Model
         }
         return $this->price;
     }
+
+
 }

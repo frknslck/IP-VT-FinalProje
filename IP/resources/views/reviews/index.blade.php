@@ -26,6 +26,7 @@
                             <small class="text-muted">Quantity: {{ $detail->quantity }}</small>
                         </div>
                         <div class="d-flex gap-2 ms-auto">
+                            <!-- {{$order->status == 'completed' ? '' : 'disabled'}} -->
                             <button 
                                 class="btn btn-outline-primary btn-sm" 
                                 data-bs-toggle="modal" 

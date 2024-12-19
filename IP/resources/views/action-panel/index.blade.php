@@ -53,63 +53,63 @@
             @endif
         </div>
     </main>
+</body>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const orders = JSON.parse('{!! $orders !!}');
-        const dailyTotals = orders.reduce((acc, order) => {
-            const date = moment(order.created_at).format('YYYY-MM-DD');
-            acc[date] = (acc[date] || 0) + parseFloat(order.total_amount);
-            return acc;
-        }, {});
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orders = JSON.parse('{!! $orders !!}');
+    const dailyTotals = orders.reduce((acc, order) => {
+        const date = moment(order.created_at).format('YYYY-MM-DD');
+        acc[date] = (acc[date] || 0) + parseFloat(order.total_amount);
+        return acc;
+    }, {});
 
-        const sortedDates = Object.keys(dailyTotals).sort();
-        const totalAmounts = sortedDates.map(date => dailyTotals[date]);
+    const sortedDates = Object.keys(dailyTotals).sort();
+    const totalAmounts = sortedDates.map(date => dailyTotals[date]);
 
 
-        const ctx = document.getElementById('profitChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: sortedDates,
-                datasets: [{
-                    label: 'Günlük Toplam Sipariş Tutarı',
-                    data: totalAmounts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
+    const ctx = document.getElementById('profitChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: sortedDates,
+            datasets: [{
+                label: 'Günlük Toplam Sipariş Tutarı',
+                data: totalAmounts,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Günlük Sipariş Toplamları'
+                },
             },
-            options: {
-                responsive: true,
-                plugins: {
+            scales: {
+                y: {
+                    beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Günlük Sipariş Toplamları'
-                    },
+                        text: 'Toplam Tutar (TL)'
+                    }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Toplam Tutar (TL)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Tarih'
-                        }
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tarih'
                     }
                 }
             }
-        });
+        }
     });
-    </script>
-</body>
+});
+</script>
 </html>
 

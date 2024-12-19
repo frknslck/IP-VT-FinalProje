@@ -80,4 +80,9 @@ class User extends Authenticatable
                     ->withPivot('is_read', 'created_at', 'updated_at')
                     ->withTimestamps();
     }
+
+    public function requestsAndComplaints()
+    {
+        return $this->hasMany(RequestComplaint::class);
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\RequestComplaintController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\UserController;
@@ -101,34 +102,54 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
 });
 
+// Request & Complaints
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/requests-complaints', [RequestComplaintController::class, 'index'])->name('requests-complaints.index');
+    Route::get('/requests-complaints/create', [RequestComplaintController::class, 'create'])->name('requests-complaints.create');
+    Route::post('/requests-complaints/create/store', [RequestComplaintController::class, 'store'])->name('requests-complaints.store');
+});
+
 // Actions
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/actions', [ActionController::class, 'index'])->name('action-panel.index');
 
-    // Category Actions
+    // Category Management
     Route::post('/actions/categories', [CategoryController::class, 'store'])->name('action-panel.store-category');
     Route::put('/actions/categories/{category}', [CategoryController::class, 'update'])->name('action-panel.update-category');
     Route::delete('/actions/categories/{category}', [CategoryController::class, 'delete'])->name('action-panel.delete-category');
 
-    // Campaign Actions
+    // Campaign Management
     Route::post('/actions/campaigns', [CampaignController::class, 'store'])->name('action-panel.store-campaign');
     Route::put('/actions/campaigns/{campaign}', [CampaignController::class, 'update'])->name('action-panel.update-campaign');
     Route::delete('/actions/campaigns/{campaign}', [CampaignController::class, 'delete'])->name('action-panel.delete-campaign');
     
-    // Coupon Actions
+    // Coupon Management
     Route::post('/actions/coupon', [CouponController::class, 'store'])->name('action-panel.store-coupon');
     Route::put('/actions/coupon/{coupon}', [CouponController::class, 'update'])->name('action-panel.update-coupon');
     Route::delete('/actions/coupon/{coupon}', [CouponController::class, 'delete'])->name('action-panel.delete-coupon');
 
-    // Product Actions
+    // Product Management
     Route::post('/actions/product', [ProductController::class, 'store'])->name('action-panel.store-product');
     Route::put('/actions/product/{product}', [ProductController::class, 'update'])->name('action-panel.update-product');
     Route::delete('/actions/product/{product}', [ProductController::class, 'delete'])->name('action-panel.delete-product');
 
-    // Notifications
+    // Order Management
+
+    Route::post('/actions/orders/{id}/status-action', [OrderController::class, 'finalizeOrderStatus'])->name('action-panel.finalize-order');
+Route::post('/actions/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('action-panel.update-order');
+
+
+
+    // Notification Service
 
     Route::post('/actions/notifications', [NotificationController::class, 'send'])->name('action-panel.send-notification');
+
+    // Request & Complaints
+
+    Route::get('/actions/review-rc/{id}', [RequestComplaintController::class, 'review'])->name('action-panel.review-requests-complaints');
+    Route::get('/actions/resolve-rc/{id}', [RequestComplaintController::class, 'resolve'])->name('action-panel.resolve-requests-complaints');
 
 });
 

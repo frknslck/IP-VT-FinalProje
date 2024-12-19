@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Action;
+use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 use App\Models\Address;
 use App\Models\Campaign;
@@ -21,7 +22,6 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Stock;
 use App\Models\Role;
-use App\Models\Notification;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->createColors();
         $this->createSizes();
         $this->createMaterials();
+        $this->createSuppliers();
         $this->createProducts();
         $this->createRoles();
         $this->createUsers();
@@ -239,6 +240,36 @@ class DatabaseSeeder extends Seeder
         }
     }
 
+    private function createSuppliers(){
+        $suppliers = [
+            [
+                'name' => 'Supplier One',
+                'contact_person' => 'John Doe',
+                'email' => 'supplierone@example.com',
+                'phone' => '123456789',
+                'address' => '123 Supplier St, City, Country',
+            ],
+            [
+                'name' => 'Supplier Two',
+                'contact_person' => 'Jane Smith',
+                'email' => 'suppliertwo@example.com',
+                'phone' => '987654321',
+                'address' => '456 Supplier Ave, City, Country',
+            ],
+            [
+                'name' => 'Supplier Three',
+                'contact_person' => 'Alice Johnson',
+                'email' => 'supplierthree@example.com',
+                'phone' => '555123456',
+                'address' => '789 Supplier Rd, City, Country',
+            ],
+        ];
+
+        foreach ($suppliers as $supplier) {
+            Supplier::create($supplier);
+        }
+    }
+
     private function createProducts()
     {
         $brands = Brand::all();
@@ -341,7 +372,6 @@ class DatabaseSeeder extends Seeder
         }
     }
         
-
     private function createProductVariants($product, $category, $colors, $materials)
     {
         $sizeCategory = $this->getSizeCategoryForProductCategory($category->slug);
@@ -355,7 +385,8 @@ class DatabaseSeeder extends Seeder
                         rand(0, 100) / 100 <= $material->chance) 
                     {
                         $sku = 'SKU-' . $product->id . '-' . $color->id . '-' . $size->id . '-' . $material->id;
-                        ProductVariant::create([
+                        
+                        $variant = ProductVariant::create([
                             'product_id' => $product->id,
                             'sku' => $sku,
                             'name' => $product->name . ' - ' . $color->name . ' - ' . $size->name . ' - ' . $material->name,
@@ -365,15 +396,28 @@ class DatabaseSeeder extends Seeder
                             'material_id' => $material->id,
                         ]);
 
-                        Stock::create([
-                            'sku' => $sku,
-                            'quantity' => rand(0, 20)
-                        ]);
+                        $randomSupplier = Supplier::inRandomOrder()->first();
+
+                        if ($randomSupplier) {
+                            $quantity = rand(1, 20);
+                            $cost = rand(10, $product->price);
+
+                            $variant->suppliers()->attach($randomSupplier->id, [
+                                'cost' => $cost,
+                                'quantity' => $quantity,
+                            ]);
+
+                            Stock::create([
+                                'sku' => $sku,
+                                'quantity' => $quantity
+                            ]);
+                        }
                     }
                 }
             }
         }
     }
+
     private function getSizeCategoryForProductCategory($categorySlug)
     {
         if (strpos($categorySlug, 'shoes') !== false) {
@@ -523,7 +567,7 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    public function createCoupons(){
+    private function createCoupons(){
         $coupons = [
             [
                 'code' => 'DISCOUNT10',
@@ -563,7 +607,7 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    public function createCampaigns()
+    private function createCampaigns()
     {
         $campaigns = [
             [
@@ -629,23 +673,29 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    public function createActions()
+    private function createActions()
     {
         $actions = [
             [
-                'name' => 'Category Manipulation'
+                'name' => 'Category Management'
             ],
             [
-                'name' => 'Campaign Manipulation'
+                'name' => 'Campaign Management'
             ],
             [
-                'name' => 'Coupon Manipulation'
+                'name' => 'Coupon Management'
             ],
             [
-                'name' => 'Product Manipulation'
+                'name' => 'Product Management'
+            ],
+            [
+                'name' => 'Order Management'
             ],
             [
                 'name' => 'Notification Service'
+            ],
+            [
+                'name' => 'Requests and Complaints'
             ],
         ];
         
@@ -659,6 +709,8 @@ class DatabaseSeeder extends Seeder
             ['role_id' => 1, 'action_id' => 3],
             ['role_id' => 1, 'action_id' => 4],
             ['role_id' => 1, 'action_id' => 5],
+            ['role_id' => 1, 'action_id' => 6],
+            ['role_id' => 1, 'action_id' => 7],
             ['role_id' => 2, 'action_id' => 4],
             ['role_id' => 4, 'action_id' => 5],
         ];
