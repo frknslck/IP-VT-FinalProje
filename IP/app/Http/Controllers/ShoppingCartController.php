@@ -18,6 +18,7 @@ class ShoppingCartController extends Controller
         $cart = $this->getOrCreateCart();
         $addresses = auth()->user()->addresses;
         $payment_methods = PaymentMethod::all();
+
         return view('shopping-cart.index', compact('cart', 'addresses', 'payment_methods'));
     }
 

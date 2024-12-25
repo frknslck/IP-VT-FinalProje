@@ -16,6 +16,8 @@ return new class extends Migration
             $table->text('used_coupon')->nullable();
             $table->string('order_number')->unique();
             $table->decimal('total_amount', 10, 2);
+            $table->string('payment_id')->nullable();
+            $table->string('payment_status')->default('pending');
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled']);
             $table->text('notes')->nullable();
             $table->timestamps();

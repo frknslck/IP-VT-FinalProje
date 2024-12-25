@@ -109,17 +109,19 @@
                         </div>
                     </form>
 
-                    <form action="{{ route('checkout.store') }}" method="POST" class="mt-3">
+                    <form id="checkout-form" action="{{ route('checkout.store') }}" method="POST" class="mt-3">
                         @csrf
                         @if($cart->coupon_id)
                             <input type="hidden" name="coupon_id" value="{{ $cart->coupon_id }}">
                         @endif
-                        <select name="payment_method_id" id="payment_method_id" class="form-select mt-3" required>
+                        <select name="payment_method_id" id="payment_method_id" class="form-select mt-3" required onchange="handlePaymentMethodChange()">
                             <option value="">Select a payment method</option>
                             @foreach($payment_methods as $method)
                                 <option value="{{ $method->id }}">{{ $method->name }}</option>
                             @endforeach
                         </select>
+
+                        <div id="card-form-container"></div>
 
                         <select name="address_id" id="address_id" class="form-select mt-3" required>
                             <option value="">Select your delivery address</option>
@@ -139,4 +141,42 @@
     <p>Your cart is empty.</p>
     @endif
 </div>
+
+<script>
+function handlePaymentMethodChange() {
+    var paymentMethod = document.getElementById('payment_method_id');
+    var cardFormContainer = document.getElementById('card-form-container');
+    
+    if (paymentMethod.value === '1') {
+        cardFormContainer.innerHTML = `
+            <div class="mt-3">
+                <label for="card_name" class="form-label">Name on Card</label>
+                <input type="text" class="form-control" id="card_name" name="card_name" required>
+            </div>
+            <div class="mt-3">
+                <label for="card_number" class="form-label">Card Number</label>
+                <input type="text" class="form-control" id="card_number" name="card_number" required>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <label for="expiry_month" class="form-label">Expiry Month</label>
+                    <input type="text" class="form-control" id="expiry_month" name="expiry_month" placeholder="MM" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="expiry_year" class="form-label">Expiry Year</label>
+                    <input type="text" class="form-control" id="expiry_year" name="expiry_year" placeholder="YYYY" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="cvc" class="form-label">CVC</label>
+                    <input type="text" class="form-control" id="cvc" name="cvc" required>
+                </div>
+            </div>
+        `;
+    } else {
+        cardFormContainer.innerHTML = '';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', handlePaymentMethodChange);
+</script>
 @endsection

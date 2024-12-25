@@ -16,6 +16,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActionController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
 // Homepage
@@ -47,12 +48,18 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/cart/remove-coupon', [ShoppingCartController::class, 'removeCoupon'])->name('cart.remove-coupon');
 });
 
-// Checkout
+// Checkout & Orders
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+});
+
+// Invoices
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
 });
 
 // Reviews

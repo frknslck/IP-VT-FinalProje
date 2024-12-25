@@ -11,6 +11,10 @@ class PaymentMethodSeeder extends Seeder
     {
         $paymentmethods = [
             [
+                'name' => 'Online Payment',
+                'is_active' => true
+            ],
+            [
                 'name' => 'Cash on Delivery',
                 'is_active' => true
             ],

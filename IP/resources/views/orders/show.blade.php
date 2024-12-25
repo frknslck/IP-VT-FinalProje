@@ -76,9 +76,14 @@
             </table>
         </div>
     </div>
-
-    <div class="text-center mt-4">
-        <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back to Orders</a>
+    
+    <div class="d-flex justify-content-center gap-4">
+        <div class="text-center mt-4">
+            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back to Orders</a>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('invoices.show', $invoice) }}" class="btn btn-primary">See the Invoice</a>
+        </div>
     </div>
 </div>
 @endsection
