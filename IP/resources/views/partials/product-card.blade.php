@@ -51,3 +51,5 @@
         <a href="{{ route('products.show', $product) }}" class="btn btn-primary w-100">View Details</a>
     </div>
 </div>
+
+<!-- This project developed by Furkan Bülbül https://github.com/frknslck -->

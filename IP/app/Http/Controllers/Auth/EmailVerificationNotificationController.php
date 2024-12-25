@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class EmailVerificationNotificationController extends Controller
 {
     /**
-     * Send a new email verification notification.
+     * This project developed by Furkan Bülbül https://github.com/frknslck
      */
     public function store(Request $request): RedirectResponse
     {

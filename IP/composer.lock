@@ -2,7 +2,8 @@
     "_readme": [
         "This file locks the dependencies of your project to a known state",
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
+        "This file is @generated automatically",
+        "Do not edit it"
     ],
     "content-hash": "1d65b54845220a627d9877e57c3de7c0",
     "packages": [
@@ -9606,6 +9607,12 @@
                 }
             ],
             "time": "2024-03-03T12:36:25+00:00"
+        }
+    ],
+    "ownership": [
+        {
+            "name": "Furkan Bülbül",
+            "github": "https://github.com/frknslck"
         }
     ],
     "aliases": [],

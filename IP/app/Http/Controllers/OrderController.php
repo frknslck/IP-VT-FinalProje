@@ -10,11 +10,14 @@ use App\Models\OrderDetail;
 use App\Models\ProductVariant;
 use App\Models\ActionLog;
 use App\Models\Invoice;
+use App\Models\Address as AppAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Iyzipay\Model\Payment;
+use Iyzipay\Model\PaymentCard;
+use Iyzipay\Options;
 use Iyzipay\Request\CreatePaymentRequest;
 use Iyzipay\Model\Locale;
 use Iyzipay\Model\Currency;
@@ -24,7 +27,7 @@ use Iyzipay\Model\Buyer;
 use Iyzipay\Model\Address;
 use Iyzipay\Model\BasketItem;
 use Iyzipay\Model\BasketItemType;
-use App\Models\Address as AppAddress;
+use Iyzipay\Request\RetrievePaymentRequest;
 
 class OrderController extends Controller
 {
@@ -70,7 +73,14 @@ class OrderController extends Controller
                 $cardInfo = $request->only(['card_name', 'card_number', 'expiry_month', 'expiry_year', 'cvc']);
                 $paymentResult = $this->processIyzicoPayment($order, $cart, $cardInfo, $address);
 
-                Log::info('Iyzico Payment Result', ['result' => $paymentResult]);
+                Log::info('Iyzico Payment Result', [
+                    'detailed' => $paymentResult->getStatus(),
+                    'conversationId' => $paymentResult->getConversationId(),
+                    'paymentId' => $paymentResult->getPaymentId(),
+                    'errorCode' => $paymentResult->getErrorCode(),
+                    'errorMessage' => $paymentResult->getErrorMessage(),
+                    'rawResult' => $paymentResult->getRawResult()
+                ]);
 
                 if ($paymentResult->getStatus() != 'success') {
                     throw new \Exception('Payment failed: ' . $paymentResult->getErrorMessage());
@@ -79,9 +89,10 @@ class OrderController extends Controller
                 $order->update([
                     'payment_id' => $paymentResult->getPaymentId(),
                     'payment_status' => 'paid',
-                    'status' => 'processing',
+                    // 'status' => 'processing',
                 ]);
 
+                // dd($paymentResult);
 
                 $this->createInvoice($order, $paymentResult);
             }
@@ -163,7 +174,10 @@ class OrderController extends Controller
 
     private function processIyzicoPayment($order, $cart, $cardInfo, $address)
     {
-        $options = new \Iyzipay\Options();
+        $cart->load('items.productVariant.product.categories');
+        $items = $cart->items()->with('productVariant.product.categories')->get();
+
+        $options = new Options();
         $options->setApiKey(env('IYZI_SANDBOX_API_KEY'));
         $options->setSecretKey(env('IYZI_SANDBOX_SECRET_KEY'));
         $options->setBaseUrl(env('IYZI_SANDBOX_BASE_URL'));
@@ -171,15 +185,15 @@ class OrderController extends Controller
         $request = new CreatePaymentRequest();
         $request->setLocale(Locale::TR);
         $request->setConversationId($order->order_number);
-        $request->setPrice(number_format($cart->subtotal, 2, '.', ''));
+        $request->setPrice(number_format($cart->total, 2, '.', ''));
         $request->setPaidPrice(number_format($cart->total, 2, '.', ''));
         $request->setCurrency(Currency::TL);
         $request->setInstallment(1);
-        $request->setBasketId($order->order_number);
+        $request->setBasketId($order->id);
         $request->setPaymentChannel(PaymentChannel::WEB);
         $request->setPaymentGroup(PaymentGroup::PRODUCT);
 
-        $paymentCard = new \Iyzipay\Model\PaymentCard();
+        $paymentCard = new PaymentCard();
         $paymentCard->setCardHolderName($cardInfo['card_name']);
         $paymentCard->setCardNumber($cardInfo['card_number']);
         $paymentCard->setExpireMonth($cardInfo['expiry_month']);
@@ -195,8 +209,11 @@ class OrderController extends Controller
         $buyer->setGsmNumber(auth()->user()->tel_no);
         $buyer->setEmail(auth()->user()->email);
         $buyer->setIdentityNumber("00000000000");
+        $buyer->setLastLoginDate("2015-10-05 12:43:35");
+        $buyer->setRegistrationDate("2013-04-21 15:12:09");
         $buyer->setRegistrationAddress($address->full_address);
         $buyer->setIp(request()->ip());
+        $buyer->setZipCode('0');
         $buyer->setCity($address->city);
         $buyer->setCountry($address->country);
         $request->setBuyer($buyer);
@@ -217,22 +234,37 @@ class OrderController extends Controller
         $billingAddress->setZipCode("0");
         $request->setBillingAddress($billingAddress);
 
-        $cart->load('items.productVariant.product.categories');
-        $items = $cart->items()->with('productVariant.product.categories')->get();
-
         $basketItems = [];
         foreach ($items as $item) {
             $basketItem = new BasketItem();
             $basketItem->setId($item->id);
             $basketItem->setName($item->first()->productVariant->product->name);
             $basketItem->setCategory1($item->first()->productVariant->product->categories->first()->name);
+            $basketItem->setCategory2('');
             $basketItem->setItemType(BasketItemType::PHYSICAL);
             $basketItem->setPrice(number_format($item->total_price, 2, '.', ''));
             $basketItems[] = $basketItem;
         }
         $request->setBasketItems($basketItems);
 
-        return Payment::create($request, $options);
+        $payment = Payment::create($request, $options);
+
+        $paymentId = $payment->getPaymentId();
+        $paymentConversationId = $payment->getConversationId();
+
+        // dd($payment);
+
+        $retrievePaymentRequest = new RetrievePaymentRequest();
+        $retrievePaymentRequest->setLocale('tr');
+        $retrievePaymentRequest->setConversationId($paymentConversationId);
+        $retrievePaymentRequest->setPaymentId($paymentId);
+        $retrievePaymentRequest->setPaymentConversationId($paymentConversationId);
+
+        // dd($retrievePaymentRequest);
+        
+        Payment::retrieve($retrievePaymentRequest, $options);
+
+        return $payment;
     }
 
     private function createInvoice($order, $paymentResult)
