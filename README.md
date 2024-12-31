@@ -92,6 +92,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ![Shopping Cart](screenshots/shoppingcart.png)
 ![Orders](screenshots/orders.png)
 ![Order Details](screenshots/orderdetails.png)
+![iyzico dashboard](https://github.com/user-attachments/assets/9a7eb8de-cedc-4735-9ae6-77b00f896e14)
 ![Reviews](screenshots/reviews.png)
 ![Reviews Add](screenshots/addreview.png)
 ![Product Page](screenshots/product1.png)
