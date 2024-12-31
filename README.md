@@ -1,3 +1,4 @@
+![icon](https://github.com/user-attachments/assets/a7d41ca6-6efb-4684-a172-6641c9eacf49)
 # Nightingale Shop - E-Commerce Platform
 
 ## Overview
@@ -14,12 +15,16 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 
 ## Features
 - **User Authentication:** Secure registration and login for users.
+- **User Profile:** Users can update their profile infos, can add, update, delete their addresses or can see roles given to them.
 - **Product Management:** Add, edit, delete, and view products.
 - **Shopping Cart:** Add products to the cart, update quantities, and proceed to checkout.
 - **Order Management:** Users can view order history, and admins can manage orders.
+- **Review Management:** Users can review products and edit reviews, admins can delete the reviews.
+- **Support Request:** Users can create request and complaint about brand, product, order, another users review, site features etc.
 - **Search and Filter:** Users can search for products and apply filters.
 - **Responsive Design:** Mobile-friendly interface using Bootstrap.
-- **Payment Integration:** (Placeholder for payment gateway details).
+- **Payment Integration:** Integrated with Iyzico for secure payments.
+- **Real-Time Notifications:** Utilized php-flasher for toast notifications.
 
 ## Installation
 Follow these steps to set up the project locally:
@@ -75,16 +80,19 @@ Follow these steps to set up the project locally:
 Example:
 ```
 ![Home Page](screenshots/home_page.png)
+![Home Page](screenshots/home_page.png)
+![Home Page](screenshots/home_page.png)
 ![Product Page](screenshots/product_page.png)
 ```
 
 ## Technologies Used
-- **Backend:** Laravel 10
+- **Backend:** Laravel 11
 - **Frontend:** Bootstrap 5, Blade Templates
 - **Database:** MySQL
+- **Payment Gateway:** Iyzico
+- **Notifications:** php-flasher with toastr integration
 - **Authentication:** Laravel Breeze
 - **Version Control:** Git
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
-
