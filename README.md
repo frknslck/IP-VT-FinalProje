@@ -82,7 +82,6 @@ Follow these steps to set up the project locally:
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
 ## Screenshots
-(Add screenshots here to showcase your project. Use Markdown image syntax.)
 ![Home Page](screenshots/homepage1.png)
 ![Home Page](screenshots/homepage2.png)
 ![Home Page](screenshots/homepage3.png)
