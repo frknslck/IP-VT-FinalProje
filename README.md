@@ -98,7 +98,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ![Product Page](screenshots/product1.png)
 ![Product Page](screenshots/product2.png)
 ![Coupons](screenshots/coupons.png)
-![Notifications](screenshots/notifications.png)
+![Notifications](screenshots/notificatons.png)
 ![Notification Detail](screenshots/notificationdetail.png)
 ![Action Page](screenshots/actions.png)
 ![Action Page](screenshots/actionsexpanded.png)
