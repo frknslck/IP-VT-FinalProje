@@ -24,6 +24,7 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 - **Responsive Design:** Mobile-friendly interface using Bootstrap.
 - **Payment Integration:** Integrated with Iyzico for secure payments.
 - **Real-Time Notifications:** Utilized php-flasher for toast notifications.
+- **User Observers:** Laravel observes registeration process and when new user comes in to the shop, laravel automatically appends a customer role to the user, creates a notification for welcoming and gifts a welcome coupon that can used in later purchaces.
 
 ## Installation
 Follow these steps to set up the project locally:
@@ -64,10 +65,14 @@ Follow these steps to set up the project locally:
 
 ## Configuration
 - **Environment Variables:** Ensure all necessary variables in `.env` are set correctly (e.g., database credentials, mail configurations).
+  **IYZICO CONFIGURATIONS ARE CRUCIAL FOR ONLINE PAYMENT SYSTEM** so please create your iyzico shop and enter your api keys to the env file.
 - **Storage Link:** Create a symbolic link for file storage:
    ```bash
    php artisan storage:link
    ```
+
+# Usage 
+If you forked this project, firstly you may want to change the UserSeeder in database/seeders for changing the values to your comfy user login values and then you can do whatever you want, you can use this site like a regular customer, or can do your job as an admin and manipulate the shops database values in action page.
 
 ## Technologies Used
 - **Backend:** Laravel 11
