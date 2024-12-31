@@ -9,9 +9,9 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Screenshots](#screenshots)
 - [Technologies Used](#technologies-used)
 - [License](#license)
+- [Screenshots](#screenshots)
 
 ## Features
 - **User Authentication:** Secure registration and login for users.
@@ -74,17 +74,6 @@ Follow these steps to set up the project locally:
 - Navigate to the admin panel at `/admin` to manage products, categories, and orders.
 - Users can browse products, add them to the cart, and checkout.
 
-## Screenshots
-(Add screenshots here to showcase your project. Use Markdown image syntax.)
-
-Example:
-```
-![Home Page](screenshots/home_page.png)
-![Home Page](screenshots/home_page.png)
-![Home Page](screenshots/home_page.png)
-![Product Page](screenshots/product_page.png)
-```
-
 ## Technologies Used
 - **Backend:** Laravel 11
 - **Frontend:** Bootstrap 5, Blade Templates
@@ -96,3 +85,29 @@ Example:
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
+
+## Screenshots
+(Add screenshots here to showcase your project. Use Markdown image syntax.)
+![Home Page](screenshots/homepage1.png)
+![Home Page](screenshots/homepage2.png)
+![Home Page](screenshots/homepage3.png)
+![Products](screenshots/products.png)
+![Blogs](screenshots/blogs.png)
+![Campaigns](screenshots/campaigns.png)
+![Wishlist](screenshots/wishlist.png)
+![Shopping Cart](screenshots/shoppingcart.png)
+![Orders](screenshots/orders.png)
+![Order Details](screenshots/orderdetails.png)
+![Reviews](screenshots/reviews.png)
+![Reviews Add](screenshots/addreview.png)
+![Product Page](screenshots/product1.png)
+![Product Page](screenshots/product2.png)
+![Coupons](screenshots/coupons.png)
+![Notifications](screenshots/notifications.png)
+![Notification Detail](screenshots/notificationdetail.png)
+![Action Page](screenshots/actions.png)
+![Action Page](screenshots/actionsexpanded.png)
+![User Profile](screenshots/userprofile.png)
+![Request/Complaint Form](screenshots/rcpage.png)
+![Login Page](screenshots/login.png)
+![Register Page](screenshots/register.png)
