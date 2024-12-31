@@ -85,6 +85,7 @@ If you forked this project, firstly you may want to change the UserSeeder in dat
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
+This project developed by Furkan Bülbül [Github->](https://github.com/frknslck).
 
 ## Screenshots
 ![Home Page](screenshots/homepage1.png)
