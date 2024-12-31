@@ -8,7 +8,6 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 - [Features](#features)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Usage](#usage)
 - [Technologies Used](#technologies-used)
 - [License](#license)
 - [Screenshots](#screenshots)
@@ -69,10 +68,6 @@ Follow these steps to set up the project locally:
    ```bash
    php artisan storage:link
    ```
-
-## Usage
-- Navigate to the admin panel at `/admin` to manage products, categories, and orders.
-- Users can browse products, add them to the cart, and checkout.
 
 ## Technologies Used
 - **Backend:** Laravel 11
