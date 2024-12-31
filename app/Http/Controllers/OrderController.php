@@ -73,6 +73,8 @@ class OrderController extends Controller
                 $cardInfo = $request->only(['card_name', 'card_number', 'expiry_month', 'expiry_year', 'cvc']);
                 $paymentResult = $this->processIyzicoPayment($order, $cart, $cardInfo, $address);
 
+                // dd($paymentResult);
+
                 Log::info('Iyzico Payment Result', [
                     'detailed' => $paymentResult->getStatus(),
                     'conversationId' => $paymentResult->getConversationId(),
@@ -185,7 +187,7 @@ class OrderController extends Controller
         $request = new CreatePaymentRequest();
         $request->setLocale(Locale::TR);
         $request->setConversationId($order->order_number);
-        $request->setPrice(number_format($cart->total, 2, '.', ''));
+        $request->setPrice(number_format($cart->subtotal, 2, '.', ''));
         $request->setPaidPrice(number_format($cart->total, 2, '.', ''));
         $request->setCurrency(Currency::TL);
         $request->setInstallment(1);
@@ -246,6 +248,8 @@ class OrderController extends Controller
             $basketItems[] = $basketItem;
         }
         $request->setBasketItems($basketItems);
+
+        // dd($request);
 
         $payment = Payment::create($request, $options);
 

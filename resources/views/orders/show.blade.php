@@ -81,9 +81,11 @@
         <div class="text-center mt-4">
             <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back to Orders</a>
         </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('invoices.show', $invoice) }}" class="btn btn-primary">See the Invoice</a>
-        </div>
+        @isset($invoice)
+            <div class="text-center mt-4">
+                <a href="{{ route('invoices.show', $invoice) }}" class="btn btn-primary">See the Invoice</a>
+            </div>
+        @endisset
     </div>
 </div>
 @endsection
