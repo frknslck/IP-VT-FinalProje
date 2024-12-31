@@ -37,7 +37,7 @@
             <form action="{{ route('action-panel.index') }}" method="GET">
                 <label for="actionDropdown" class="form-label">Select an action</label>
                 <select id="actionDropdown" name="action_id" class="form-select" onchange="this.form.submit()">
-                    <option selected disabled>Aksiyon seçiniz...</option>
+                    <option selected disabled>Select an action...</option>
                     @foreach($actions as $action)
                         <option value="{{ $action->id }}" {{ $selectedActionId == $action->id ? 'selected' : '' }}>
                             {{ $action->name }}
