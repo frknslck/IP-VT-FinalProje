@@ -93,7 +93,7 @@ If you forked this project, firstly you may want to change the UserSeeder in dat
 - **Authentication:** Laravel Breeze
 - **Version Control:** Git
 
-# What I Learned
+## What I Learned
 
 - Mastered Laravel's ecosystem, including Eloquent ORM, MVC architecture, and database configurations.
 - Designed and implemented a complete e-commerce platform from scratch.
@@ -106,7 +106,7 @@ If you forked this project, firstly you may want to change the UserSeeder in dat
 - Improved front-end skills, creating responsive designs with Bootstrap and dynamic UIs with JavaScript.
 - Gained experience in handling complex business logic specific to e-commerce (inventory, orders, reviews).
 
-# Challenging Aspects of the Project
+## Challenging Aspects of the Project
 
 - Understanding and implementing model relationships and their dynamic properties in Laravel:
     - Grasping the concept of Eloquent relationships (One-to-Many, Many-to-Many, etc.)
