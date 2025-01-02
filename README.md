@@ -11,8 +11,7 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Technologies Used](#technologies-used)
-- [What I Learned](#what-i-learned)
-- [Challenging Aspects of the Project](challenging-aspects-of-the-project)
+- [What I Learned - Challenging Aspects of the Project](#what-i-learned)
 - [License](#license)
 - [Screenshots](#screenshots)
 
