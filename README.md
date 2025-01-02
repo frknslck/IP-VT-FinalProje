@@ -81,7 +81,22 @@ Follow these steps to set up the project locally:
    ```
 
 # Usage 
-If you forked this project, firstly you may want to change the UserSeeder in database/seeders for changing the values to your comfy user login values and then you can do whatever you want, you can use this site like a regular customer, or can do your job as an admin and manipulate the shops database values in action page.
+If you forked/downloaded this project, firstly you may want to change the UserSeeder in database/seeders for changing the values to your comfy user login values and then you can do whatever you want, you can use this site like a regular customer, or can do your job as an admin and manipulate the shops database values in action page.
+
+If you don't want to deal with that situation 
+
+Default Created Admin User:
+email: admin@gmail.com
+password: admin12345
+
+Default Created Corporation User:
+email: nike@gmail.com
+password: nike12345
+
+Default Created Blogger User:
+email: blogger@gmail.com
+password: blogger12345
+
 
 ## Technologies Used
 - **Backend:** Laravel 11

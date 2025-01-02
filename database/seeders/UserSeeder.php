@@ -12,24 +12,24 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'furkan selçuk',
-                'email' => 'fsb@gmail.com',
-                'tel_no' => '05309191726',
-                'password' => bcrypt('fsb12345'),
+                'name' => 'Admin User',
+                'email' => 'admin@gmail.com',
+                'tel_no' => '05055055500',
+                'password' => bcrypt('admin12345'),
                 'roles' => ['Admin']
             ],
             [
-                'name' => 'nike',
+                'name' => 'Nike',
                 'email' => 'nike@gmail.com',
                 'tel_no' => '05055055501',
-                'password' => bcrypt('fsb12345'),
+                'password' => bcrypt('nike12345'),
                 'roles' => ['Corp']
             ],
             [
-                'name' => 'yağmur kaya',
-                'email' => 'ymrky@gmail.com',
-                'tel_no' => '05055322682',
-                'password' => bcrypt('fsb12345'),
+                'name' => 'Blogger User',
+                'email' => 'blogger@gmail.com',
+                'tel_no' => '05055055502',
+                'password' => bcrypt('blogger12345'),
                 'roles' => ['Blogger']
             ]
         ];
