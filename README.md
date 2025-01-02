@@ -6,9 +6,13 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 
 ## Table of Contents
 - [Features](#features)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Usage](#usage)
 - [Technologies Used](#technologies-used)
+- [What I Learned](#what-i-learned)
+- [Challenging Aspects of the Project](challenging-aspects-of-the-project)
 - [License](#license)
 - [Screenshots](#screenshots)
 
@@ -25,6 +29,12 @@ Nightingale Shop is a modern e-commerce platform built using Laravel PHP framewo
 - **Payment Integration:** Integrated with Iyzico for secure payments.
 - **Real-Time Notifications:** Utilized php-flasher for toast notifications.
 - **User Observers:** Laravel observes registeration process and when new user comes in to the shop, laravel automatically appends a customer role to the user, creates a notification for welcoming and gifts a welcome coupon that can used in later purchaces.
+
+## Requirements
+- PHP 8.2 or higher
+- Composer
+- Node.js and npm
+- MySQL database
 
 ## Installation
 Follow these steps to set up the project locally:
@@ -82,6 +92,29 @@ If you forked this project, firstly you may want to change the UserSeeder in dat
 - **Notifications:** php-flasher with toastr integration
 - **Authentication:** Laravel Breeze
 - **Version Control:** Git
+
+# What I Learned
+
+- Mastered Laravel's ecosystem, including Eloquent ORM, MVC architecture, and database configurations.
+- Designed and implemented a complete e-commerce platform from scratch.
+- Integrated secure payment processing (using Iyzico's sandbox, with plans to explore other payment systems).
+- Implemented robust user authentication, role-based access control, and permission management.
+- Enhanced database design and optimization skills for improved performance.
+- Gained practical experience in RESTful API development and consumption.
+- Developed project management and planning skills for large-scale web applications.
+- Learned to implement and customize third-party packages to extend functionality.
+- Improved front-end skills, creating responsive designs with Bootstrap and dynamic UIs with JavaScript.
+- Gained experience in handling complex business logic specific to e-commerce (inventory, orders, reviews).
+
+# Challenging Aspects of the Project
+
+- Understanding and implementing model relationships and their dynamic properties in Laravel:
+    - Grasping the concept of Eloquent relationships (One-to-Many, Many-to-Many, etc.)
+    - Learning the use of dynamic properties for accessing related data (e.g., $product->variants)
+    - Learning to efficiently query and eager load related data to avoid N+1 query problems
+- Designing a scalable database schema that accommodates complex e-commerce requirements
+- Implementing and managing state throughout the application, especially for the checkout process
+- Ensuring data integrity and consistency across related models and database tables
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.<br>
